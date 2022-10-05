@@ -54,12 +54,12 @@ def trigger_retry_action(
         + build_to_retry
         + " -p ACTION="
         + action
+        + ' -p ERROR="'
+        + str(regex.replace(" ", "&"))
+        + '"'
     )
     print(trigger_retry)
     os.system(trigger_retry)
-
-    # with open(tracker_path, 'a') as summary:
-    #    summary.write( str(datetime.datetime.now()) + " | " + str(job_to_retry) + " | #" + str(build_to_retry) + " | " + str(regex) + " | " + str() + " | " + str() + "\n" )
 
 
 def trigger_nodeoff_action(job_to_retry, build_to_retry, job_url, node_name):

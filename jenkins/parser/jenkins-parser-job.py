@@ -221,9 +221,6 @@ if __name__ == "__main__":
 
     # Define paths:
     jobs_config_path = "cms-bot/jenkins/parser/jobs-config.json"  # This file matches job with their known errors and the action to perform
-    tracker_path = (
-        os.environ.get("HOME") + "/builds/jenkins-test-parser/parser-web-info.md"
-    )
     builds_dir = os.environ.get("HOME") + "/builds"  # Path to the actual build logs
 
     # Define e-mails to notify
