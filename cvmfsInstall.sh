@@ -185,7 +185,7 @@ for t in nweek- ; do
   for w in $(find $BASEDIR -mindepth 1 -maxdepth 1 -name "$t*" -type d | sed 's|.*/||') ; do
     let N="$(echo $w | cut -d- -f2 | sed 's|^0||') % ${NUM_WEEKS}" || true
     if [ $(echo "$REPOSITORIES" | grep "^$w$" | wc -l) -gt 0 ] ; then
-      ln -s $BASEDIR/$w $BASEDIR/week$N
+      ln -vs $BASEDIR/$w $BASEDIR/week$N
       [ -f $BASEDIR/week$N/etc/scramrc/links.db ] || continue
       echo "$BASEDIR/scramdb" > $BASEDIR/week$N/etc/scramrc/links.db
     else
