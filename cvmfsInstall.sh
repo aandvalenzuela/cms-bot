@@ -89,7 +89,7 @@ for t in nweek- ; do
   for w in $(find $BASEDIR -mindepth 1 -maxdepth 1 -name "$t*" -type d | sed 's|.*/||') ; do
     if [ $(echo "$REPOSITORIES" | grep "^$w$" | wc -l) -gt 0 ] ; then
       let N="$(echo $w | cut -d- -f2 | sed 's|^0||') % ${NUM_WEEKS}" || true
-      ln -f $BASEDIR/$w $BASEDIR/week$N
+      ln -sf $BASEDIR/$w $BASEDIR/week$N
     else
       echo "Deleting obsolete week $w"
       rm -rf $BASEDIR/$w
@@ -185,7 +185,7 @@ for t in nweek- ; do
   for w in $(find $BASEDIR -mindepth 1 -maxdepth 1 -name "$t*" -type d | sed 's|.*/||') ; do
     let N="$(echo $w | cut -d- -f2 | sed 's|^0||') % ${NUM_WEEKS}" || true
     if [ $(echo "$REPOSITORIES" | grep "^$w$" | wc -l) -gt 0 ] ; then
-      ln -f $BASEDIR/$w $BASEDIR/week$N
+      ln -sf $BASEDIR/$w $BASEDIR/week$N
       [ -f $BASEDIR/week$N/etc/scramrc/links.db ] || continue
       echo "$BASEDIR/scramdb" > $BASEDIR/week$N/etc/scramrc/links.db
     else
@@ -195,7 +195,7 @@ for t in nweek- ; do
   done
 done
 rm -f $BASEDIR/latest
-ln -f $(grep "^nweek-" $WORKSPACE/cms-bot/ib-weeks | tail -1) $BASEDIR/latest
+ln -sf $(grep "^nweek-" $WORKSPACE/cms-bot/ib-weeks | tail -1) $BASEDIR/latest
 
 # Write everything in the repository
 echo "Publishing started" `date`
