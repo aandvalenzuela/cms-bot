@@ -1,11 +1,6 @@
 #!/bin/sh -ex
 source $(dirname $0)/cmsrep.sh
 CMS_BOT_DIR=$(dirname $(realpath $0))
-export BASEDIR=/cvmfs/$CVMFS_REPOSITORY
-export THISDIR=$(/bin/pwd -P)
-export LC_ALL=C
-export LC_CTYPE=C
-export LANG=C
 
 ARCHITECTURE=$1
 CMS_WEEK=$2
@@ -19,8 +14,14 @@ NUM_WEEKS=$8
 REINSTALL_COMMON=$9
 INSTALL_PACKAGES="${10}"
 
-CVMFS_SUBPATH=$(echo $ARCHITECTURE | cut -d "_" -f 2)
+ARCH_SUBPATH=$(echo $ARCHITECTURE | cut -d "_" -f 2)
 WEEK_DIR=$(echo $CMS_WEEK | cut -d "." -f 2)
+
+export BASEDIR=/cvmfs/$CVMFS_REPOSITORY/$WEEK_DIR/$ARCH_SUBPATH
+export THISDIR=$(/bin/pwd -P)
+export LC_ALL=C
+export LC_CTYPE=C
+export LANG=C
 
 if [ "$REINSTALL_COMMON" = "true" ] ; then
   REINSTALL_COMMON="--reinstall"
@@ -48,7 +49,7 @@ REPOSITORIES=`tail -${NUM_WEEKS} ib-weeks | sed -e's/-\([0-9]\)$/-0\1/' | sort -
 
 echo $REPOSITORIES
 # Prepare the cvmfs repository in read/write mode
-cvmfs_server transaction $CVMFS_REPOSITORY/$WEEK_DIR/$CVMFS_SUBPATH|| ((cvmfs_server abort -f || rm -fR /var/spool/cvmfs/$CVMFS_REPOSITORY/is_publishing.lock) && cvmfs_server transaction)
+cvmfs_server transaction $CVMFS_REPOSITORY/$WEEK_DIR/$ARCH_SUBPATH|| ((cvmfs_server abort -f || rm -fR /var/spool/cvmfs/$CVMFS_REPOSITORY/is_publishing.lock) && cvmfs_server transaction)
 # Check if the transaction really happened
 if [ `touch $BASEDIR/is_writable 2> /dev/null; echo "$?"` -eq 0 ]; then
   rm $BASEDIR/is_writable
