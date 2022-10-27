@@ -20,7 +20,7 @@ REINSTALL_COMMON=$9
 INSTALL_PACKAGES="${10}"
 
 CVMFS_SUBPATH=$(echo $ARCHITECTURE | cut -d "_" -f 2)
-WEEK_DIR =$(echo $CMS_WEEK | cut -d "." -f 2)
+WEEK_DIR=$(echo $CMS_WEEK | cut -d "." -f 2)
 
 if [ "$REINSTALL_COMMON" = "true" ] ; then
   REINSTALL_COMMON="--reinstall"
