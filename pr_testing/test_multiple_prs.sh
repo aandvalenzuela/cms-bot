@@ -300,9 +300,6 @@ for U_REPO in $(echo ${UNIQ_REPOS} | tr ' ' '\n'  | grep -v '/cmssw$' ); do
             mark_commit_status_all_prs '' 'error' -u "${BUILD_URL}" -d "Failed to merge ${PR}"
             exit 0
         fi
-	pushd ${CMSDIST_DIR}
-	git diff origin/${BASE_BRANCH} --name-only
-	popd
     done
 done
 
@@ -365,6 +362,11 @@ if ${BUILD_EXTERNAL} ; then
     fi
     if [ ! -d "cmsdist" ] ; then
         git clone git@github.com:cms-sw/cmsdist -b $CMSDIST_TAG
+        # If externals modified, check for CRAB
+	echo $(pwd)
+	pushd ${CMSDIST_DIR}
+        git diff origin/${CMSDIST_TAG} --name-only
+        popd
     fi
 
     echo_section "Building, testing and commenting status to github"
