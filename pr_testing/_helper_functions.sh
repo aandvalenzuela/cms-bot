@@ -51,7 +51,7 @@ function git_clone_and_merge (){
         pushd ${BASE_REPO_NAME}  >/dev/null 2>&1
             git pull https://github.com/${TEST_REPO}.git ${TEST_BRANCH}
 	    echo "--> helpers"
-	    echo ${pwd}
+	    echo $(pwd)
 	popd
     popd
 }
