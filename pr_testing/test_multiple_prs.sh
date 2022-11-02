@@ -294,6 +294,8 @@ for U_REPO in $(echo ${UNIQ_REPOS} | tr ' ' '\n'  | grep -v '/cmssw$' ); do
     for PR in ${FILTERED_PRS}; do
         ERR=false
         git_clone_and_merge "$(get_cached_GH_JSON "${PR}")" || ERR=true
+	echo "--> test multiple prs"
+	echo ${pwd}
         if ${ERR} ; then
             echo "Failed to merge pull requests ${PR}." > ${RESULTS_DIR}/10-report.res
             prepare_upload_results
