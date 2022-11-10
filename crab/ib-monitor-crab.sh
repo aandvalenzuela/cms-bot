@@ -43,7 +43,7 @@ if [ "${UPLOAD_UNIQ_ID}" != "" ]; then
     echo "CRAB" > $WORKSPACE/testsResults/crab-failed-${CRABCLIENT_TYPE}.res
   else
     echo "No errors in CRAB PR test"
-    echo 'CRAB_TESTS;OK,Summary CRAB Tests'${CRABCLIENT_TYPE}',See Logs,CRABTests-'${CRABCLIENT_TYPE} >> $WORKSPACE/testsResults/crab-${CRABCLIENT_TYPE}.txt
+    echo 'CRAB_TESTS_'${CRABCLIENT_TYPE}';OK,CRAB Tests '${CRABCLIENT_TYPE}',See Logs,CRABTests-'${CRABCLIENT_TYPE} >> $WORKSPACE/testsResults/crab-${CRABCLIENT_TYPE}.txt
     CRAB_OK=true
     touch $WORKSPACE/testsResults/crab-failed-${CRABCLIENT_TYPE}.res
     touch $WORKSPACE/testsResults/crab-report-${CRABCLIENT_TYPE}.res
