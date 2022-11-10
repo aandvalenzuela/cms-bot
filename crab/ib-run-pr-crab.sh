@@ -66,11 +66,16 @@ do
     echo "CRABCLIENT_TYPE=$CRABCLIENT_TYPE" >> $WORKSPACE/crab/crab-${CRABCLIENT_TYPE}.property
 
     # Clean workspace for next iteration
+    cp $WORKSPACE/crab/statusfile $WORKSPACE/CRABTests-${CRABCLIENT_TYPE}
     mkdir $WORKSPACE/crab-${CRABCLIENT_TYPE}
     mv $WORKSPACE/CMSSW* $WORKSPACE/crab-${CRABCLIENT_TYPE} || true
     mv $WORKSPACE/crab/crab-${CRABCLIENT_TYPE}.property $WORKSPACE
     mv $WORKSPACE/crab $WORKSPACE/crab-${CRABCLIENT_TYPE} || true
     ls $WORKSPACE
 done
+
+DRY_RUN=""
+NO_POST=""
+prepare_upload_results
 
 mark_commit_status_all_prs 'crab' 'success' -u "${BUILD_URL}" -d "CRAB test successfully triggered"
