@@ -16,7 +16,7 @@ while true ; do
   curl -s -L -X GET --cert "/tmp/x509up_u${ID}" --key "/tmp/x509up_u${ID}" --capath "/etc/grid-security/certificates/" "${GRIDSITE}/status_cache" > $WORKSPACE/status-${CRABCLIENT_TYPE}.log 2>&1
   cat $WORKSPACE/status-${CRABCLIENT_TYPE}.log
   errval=$(grep -o "404 Not Found" $WORKSPACE/status-${CRABCLIENT_TYPE}.log || echo "")
-  cat $WORKSPACE/status-${CRABCLIENT_TYPE}.log >> $WORKSPACE/testsResults/logfile-${CRABCLIENT_TYPE}
+  cat $WORKSPACE/status-${CRABCLIENT_TYPE}.log >> $WORKSPACE/testsResults/crab-logfile-${CRABCLIENT_TYPE}
   if [ "$errval" = "" ] ; then
     # Keep checking until job finishes
     status=$(grep -Eo "'State': '(finished|failed)'" $WORKSPACE/status-${CRABCLIENT_TYPE}.log || echo "")
@@ -69,7 +69,7 @@ else
   # IB test
   echo "Uploading results to IB page"
   mv $WORKSPACE/testsResults/statusfile-${CRABCLIENT_TYPE} $WORKSPACE/testsResults/statusfile
-  mv $WORKSPACE/testsResults/logfile-${CRABCLIENT_TYPE} $WORKSPACE/testsResults/monitor.log
+  mv $WORKSPACE/testsResults/crab-logfile-${CRABCLIENT_TYPE} $WORKSPACE/testsResults/monitor.log
   ls -l $WORKSPACE/testsResults
   send_jenkins_artifacts $WORKSPACE/testsResults ib-run-crab/$RELEASE_FORMAT/$ARCHITECTURE/${CRAB_BUILD_ID}/
 fi
