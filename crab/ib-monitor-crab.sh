@@ -54,9 +54,10 @@ if [ "${UPLOAD_UNIQ_ID}" != "" ]; then
   source $WORKSPACE/cms-bot/common/github_reports.sh
   rm $WORKSPACE/status-${CRABCLIENT_TYPE}.log
   mv $WORKSPACE/testsResults/statusfile-${CRABCLIENT_TYPE} $WORKSPACE/CRABTests-${CRABCLIENT_TYPE}
-  prepare_upload_results
+  
   DRY_RUN=""
   NO_POST=""
+  prepare_upload_results
   CMSSW_QUEUE=${CMSSW_QUEUE_FLAVOR}
   
   if [ "X$CRAB_OK" = Xtrue ]; then
