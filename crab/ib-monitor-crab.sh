@@ -56,6 +56,7 @@ if [ "${UPLOAD_UNIQ_ID}" != "" ]; then
   mv $WORKSPACE/testsResults/statusfile-${CRABCLIENT_TYPE} $WORKSPACE/CRABTests-${CRABCLIENT_TYPE}
   prepare_upload_results
   DRY_RUN=""
+  NO_POST=""
   CMSSW_QUEUE=${CMSSW_QUEUE_FLAVOR}
   
   if [ "X$CRAB_OK" = Xtrue ]; then
