@@ -15,17 +15,17 @@ CLEANUP_WORKSPACE=$2
 REMOTE_USER=$(echo $TARGET | sed 's|@.*||')
 SSH_OPTS="-q -o IdentitiesOnly=yes -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o ServerAliveInterval=60"
 
-#Check unique slave conenction
-if [ "${SLAVE_UNIQUE_TARGET}" = "YES" ] ; then
+#Check unique node conenction
+if [ "${NODE_UNIQUE_TARGET}" = "YES" ] ; then
   TARGET_HOST=$(echo $TARGET | sed 's|.*@||')
   if [ `pgrep -f "@${TARGET_HOST} " | grep -v "$$" | wc -l` -gt 1 ] ; then exit 99 ; fi
 fi
 DOCKER_IMG_HOST=$(get_env DOCKER_IMG_HOST)
-MULTI_MASTER_SLAVE=$(get_env MULTI_MASTER_SLAVE)
+MULTI_MASTER_NODE=$(get_env MULTI_MASTER_SLAVE)
 EX_LABELS=$(get_env FORCE_LABELS)
 JAVA_CMD=$(get_env JAVA_CMD)
 
-JENKINS_SLAVE_JAR_MD5=$(md5sum ${HOME}/slave.jar | sed 's| .*||')
+JENKINS_NODE_JAR_MD5=$(md5sum ${HOME}/slave.jar | sed 's| .*||')
 USER_HOME_MD5=""
 if [ "${REMOTE_USER}" = "cmsbld" ] ; then
   USER_HOME_MD5=$(tar c ${HOME}/slave_setup/cmsbot 2>&1 | md5sum  | tail -1 | sed 's| .*||')
@@ -33,14 +33,14 @@ fi
 #ssh -n $SSH_OPTS $TARGET aklog || true
 SYS_SCRIPT="system-${REMOTE_USER}-$(hostname -s).sh"
 scp -p $SSH_OPTS ${SCRIPT_DIR}/system-info.sh "$TARGET:/tmp/${SYS_SCRIPT}"
-SYSTEM_DATA=$((ssh -n $SSH_OPTS $TARGET "/tmp/${SYS_SCRIPT} '${JENKINS_SLAVE_JAR_MD5}' '${WORKSPACE}' '${DOCKER_IMG_HOST}' '${CLEANUP_WORKSPACE}' '${USER_HOME_MD5}'" || echo "DATA_ERROR=Fail to run system-info.sh") | grep '^DATA_' | tr '\n' ';')
+SYSTEM_DATA=$((ssh -n $SSH_OPTS $TARGET "/tmp/${SYS_SCRIPT} '${JENKINS_NODE_JAR_MD5}' '${WORKSPACE}' '${DOCKER_IMG_HOST}' '${CLEANUP_WORKSPACE}' '${USER_HOME_MD5}'" || echo "DATA_ERROR=Fail to run system-info.sh") | grep '^DATA_' | tr '\n' ';')
 
 if [ $(get_data ERROR | wc -l) -gt 0 ] ; then
   echo $DATA | tr ';' '\n'
   exit 1
 fi
 
-#Check slave workspace size in GB
+#Check node workspace size in GB
 if [ "${SLAVE_MAX_WORKSPACE_SIZE}" != "" ] ; then
   if [ $(get_data WORKSPACE_SIZE) -lt $SLAVE_MAX_WORKSPACE_SIZE ] ; then exit 99 ; fi
 fi
@@ -57,31 +57,31 @@ JENKINS_API_URL=$(echo ${JENKINS_URL} | sed "s|^https://[^/]*/|http://localhost:
 SET_KRB5CCNAME=true
 CUR_LABS=$(grep '<label>' ${HOME}/nodes/${NODE_NAME}/config.xml |  sed 's|.*<label>||;s|</label>||')
 if [ $(echo "${CUR_LABS}" | tr ' ' '\n' | grep '^no_label$' | wc -l) -eq 0 ] ; then
-  slave_labels=""
+  node_labels=""
   case ${SLAVE_TYPE} in
-  *dmwm* ) slave_labels="cms-dmwm-cc7 no_label" ;;
+  *dmwm* ) node_labels="cms-dmwm-cc7 no_label" ;;
   aiadm* ) echo "Skipping auto labels" ;;
   lxplus* )
-    slave_labels=$(get_data SLAVE_LABELS)
+    node_labels=$(get_data SLAVE_LABELS)
     ;;
   * )
-    slave_labels="auto-label $(get_data SLAVE_LABELS)"
+    node_labels="auto-label $(get_data SLAVE_LABELS)"
     case ${SLAVE_TYPE} in
-      cmsbuild*|vocms* ) slave_labels="${slave_labels} cloud cmsbuild release-build";;
-      cmsdev*   )        slave_labels="${slave_labels} cloud cmsdev profiling";;
-      * ) if [ $(echo "${CUR_LABS}" | tr ' ' '\n' | grep '^release-build$' | wc -l) -gt 0 ] ; then slave_labels="${slave_labels} release-build"; fi ;;
+      cmsbuild*|vocms* ) node_labels="${node_labels} cloud cmsbuild release-build";;
+      cmsdev*   )        node_labels="${node_labels} cloud cmsdev profiling";;
+      * ) if [ $(echo "${CUR_LABS}" | tr ' ' '\n' | grep '^release-build$' | wc -l) -gt 0 ] ; then node_labels="${node_labels} release-build"; fi ;;
     esac
     case $(get_data HOST_CMS_ARCH) in
-      *_aarch64|*_ppc64le ) slave_labels="${slave_labels} cmsbuild";;
+      *_aarch64|*_ppc64le ) node_labels="${node_labels} cmsbuild";;
     esac
     ;;
   esac
   case ${SLAVE_TYPE} in
-  lxplus8* ) slave_labels="${slave_labels} lxplus8";;
+  lxplus8* ) node_labels="${node_labels} lxplus8";;
   esac
-  if [ "${slave_labels}" != "" ] ; then
-    slave_labels=$(echo ${slave_labels} ${EX_LABELS} | tr ' ' '\n' | sort | uniq | tr '\n' ' ' | sed 's|^ *||;s| *$||')
-    if [ "${slave_labels}" != "${CUR_LABS}" ] ; then cat ${SCRIPT_DIR}/set-slave-labels.groovy | ${JENKINS_CLI_CMD} groovy = ${NODE_NAME} ${slave_labels} ; fi
+  if [ "${node_labels}" != "" ] ; then
+    node_labels=$(echo ${node_labels} ${EX_LABELS} | tr ' ' '\n' | sort | uniq | tr '\n' ' ' | sed 's|^ *||;s| *$||')
+    if [ "${node_labels}" != "${CUR_LABS}" ] ; then cat ${SCRIPT_DIR}/set-slave-labels.groovy | ${JENKINS_CLI_CMD} groovy = ${NODE_NAME} ${node_labels} ; fi
   fi
 fi
 case ${SLAVE_TYPE} in
@@ -119,11 +119,11 @@ if [ "${MULTI_MASTER_SLAVE}" = "true" ] ; then
   #set +x
   let MAX_WAIT_TIME=60*60*12
   WAIT_GAP=60
-  SLAVE_CMD_REGEX="^java\s+-DMULTI_MASTER_SLAVE=true\s+-jar\s+.*/slave.*\s+"
+  NODE_CMD_REGEX="^java\s+-DMULTI_MASTER_SLAVE=true\s+-jar\s+.*/slave.*\s+"
   START_ALL_SHARED=true
   while true ; do
     if [ $(grep '</temporaryOfflineCause>' ${HOME}/nodes/${NODE_NAME}/config.xml | wc -l) -eq 0 ] ; then
-      if [ $(ssh -n $SSH_OPTS $TARGET "pgrep -f '${SLAVE_CMD_REGEX}' | wc -l") -eq 0 ] ; then break ; fi
+      if [ $(ssh -n $SSH_OPTS $TARGET "pgrep -f '${NODE_CMD_REGEX}' | wc -l") -eq 0 ] ; then break ; fi
     fi
     if $START_ALL_SHARED ; then
       START_ALL_SHARED=false
@@ -153,7 +153,7 @@ if [ "${MULTI_MASTER_SLAVE}" = "true" ] ; then
     fi
   done
   set -x
-  pre_cmd="${pre_cmd} pgrep -f  '${SLAVE_CMD_REGEX}' && exit 1 || "
+  pre_cmd="${pre_cmd} pgrep -f  '${NODE_CMD_REGEX}' && exit 1 || "
   EXTRA_JAVA_ARGS="-DMULTI_MASTER_SLAVE=true"
 fi
 if [ $(grep '</temporaryOfflineCause>' ${HOME}/nodes/${NODE_NAME}/config.xml | wc -l) -gt 0 ] ; then
