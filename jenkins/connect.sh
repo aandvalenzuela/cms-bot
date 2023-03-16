@@ -18,13 +18,13 @@ export KRB5CCNAME=FILE:/tmp/krb5cc_$(id -u)_${KINIT_USER}_${NODE_TYPE}
 KPRINCIPAL=${KINIT_USER}@CERN.CH
 kinit ${KPRINCIPAL} -k -t ${KTAB}
 klist || true
-export SLAVE_UNIQUE_TARGET=""
+export NODE_UNIQUE_TARGET=""
 export NODE_MAX_WORKSPACE_SIZE=""
 SCRIPT_DIR=$(cd $(dirname $0); /bin/pwd)
 BLACKLIST_DIR="${HOME}/workspace/cache/blacklist"
 
 if [ $(echo $NODE_TYPE | grep '^lxplus\|^aiadm' | wc -l) -gt 0 ] ; then
-  export SLAVE_UNIQUE_TARGET="YES"
+  export NODE_UNIQUE_TARGET="YES"
   case ${NODE_TYPE} in 
     lxplus* ) export NODE_MAX_WORKSPACE_SIZE=10;;
   esac
