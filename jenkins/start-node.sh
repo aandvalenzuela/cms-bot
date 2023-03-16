@@ -41,8 +41,8 @@ if [ $(get_data ERROR | wc -l) -gt 0 ] ; then
 fi
 
 #Check node workspace size in GB
-if [ "${SLAVE_MAX_WORKSPACE_SIZE}" != "" ] ; then
-  if [ $(get_data WORKSPACE_SIZE) -lt $SLAVE_MAX_WORKSPACE_SIZE ] ; then exit 99 ; fi
+if [ "${NODE_MAX_WORKSPACE_SIZE}" != "" ] ; then
+  if [ $(get_data WORKSPACE_SIZE) -lt $NODE_MAX_WORKSPACE_SIZE ] ; then exit 99 ; fi
 fi
 
 if [ $(get_data RSYNC_SLAVE) = "true" ] ; then
@@ -58,7 +58,7 @@ SET_KRB5CCNAME=true
 CUR_LABS=$(grep '<label>' ${HOME}/nodes/${NODE_NAME}/config.xml |  sed 's|.*<label>||;s|</label>||')
 if [ $(echo "${CUR_LABS}" | tr ' ' '\n' | grep '^no_label$' | wc -l) -eq 0 ] ; then
   node_labels=""
-  case ${SLAVE_TYPE} in
+  case ${NODE_TYPE} in
   *dmwm* ) node_labels="cms-dmwm-cc7 no_label" ;;
   aiadm* ) echo "Skipping auto labels" ;;
   lxplus* )
@@ -66,7 +66,7 @@ if [ $(echo "${CUR_LABS}" | tr ' ' '\n' | grep '^no_label$' | wc -l) -eq 0 ] ; t
     ;;
   * )
     node_labels="auto-label $(get_data SLAVE_LABELS)"
-    case ${SLAVE_TYPE} in
+    case ${NODE_TYPE} in
       cmsbuild*|vocms* ) node_labels="${node_labels} cloud cmsbuild release-build";;
       cmsdev*   )        node_labels="${node_labels} cloud cmsdev profiling";;
       * ) if [ $(echo "${CUR_LABS}" | tr ' ' '\n' | grep '^release-build$' | wc -l) -gt 0 ] ; then node_labels="${node_labels} release-build"; fi ;;
@@ -76,7 +76,7 @@ if [ $(echo "${CUR_LABS}" | tr ' ' '\n' | grep '^no_label$' | wc -l) -eq 0 ] ; t
     esac
     ;;
   esac
-  case ${SLAVE_TYPE} in
+  case ${NODE_TYPE} in
   lxplus8* ) node_labels="${node_labels} lxplus8";;
   esac
   if [ "${node_labels}" != "" ] ; then
@@ -84,7 +84,7 @@ if [ $(echo "${CUR_LABS}" | tr ' ' '\n' | grep '^no_label$' | wc -l) -eq 0 ] ; t
     if [ "${node_labels}" != "${CUR_LABS}" ] ; then cat ${SCRIPT_DIR}/set-slave-labels.groovy | ${JENKINS_CLI_CMD} groovy = ${NODE_NAME} ${node_labels} ; fi
   fi
 fi
-case ${SLAVE_TYPE} in
+case ${NODE_TYPE} in
   lxplus* ) SET_KRB5CCNAME=false ;;
 esac
 if [ $(get_data JENKINS_SLAVE_SETUP) = "false" ] ; then
