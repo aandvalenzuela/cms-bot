@@ -76,6 +76,9 @@ if [ $(echo "${CUR_LABS}" | tr ' ' '\n' | grep '^no_label$' | wc -l) -eq 0 ] ; t
     esac
     ;;
   esac
+  case ${SLAVE_TYPE} in
+  lxplus8* ) slave_labels="${slave_labels} lxplus8";;
+  esac
   if [ "${slave_labels}" != "" ] ; then
     slave_labels=$(echo ${slave_labels} ${EX_LABELS} | tr ' ' '\n' | sort | uniq | tr '\n' ' ' | sed 's|^ *||;s| *$||')
     if [ "${slave_labels}" != "${CUR_LABS}" ] ; then cat ${SCRIPT_DIR}/set-slave-labels.groovy | ${JENKINS_CLI_CMD} groovy = ${NODE_NAME} ${slave_labels} ; fi
