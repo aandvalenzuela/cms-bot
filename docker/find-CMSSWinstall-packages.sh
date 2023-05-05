@@ -6,12 +6,13 @@ seeds=("rpm_version" "platformSeeds" "unsupportedSeeds" $cmsos"_platformSeeds" "
 base_dir=$(pwd)
 bootstrap_dir="${base_dir}/bootstrap-workspace"
 workspace_dir="${base_dir}/workspace"
-logfile_dir="${base_dir}/logs/$SCRAM_ARCH"
+logfile_dir="${base_dir}/logs/${SCRAM_ARCH}"
+main_log="${base_dir}/${SCRAM_ARCH}_main.log"
 mkdir -p $logfile_dir
-touch "${base_dir}/main.log"
+touch $main_log
 
 bootstrap_log="${bootstrap_dir}/bootstrapx.log"
-driver_file="${base_dir}/generated-driver.txt"
+driver_file="${base_dir}/${SCRAM_ARCH}_generated-driver.txt"
 rm -rf $driver_file && touch $driver_file
 
 # Create empty workspace for bootstrap
@@ -102,44 +103,44 @@ find_provides_from_log() {
 echo "Starting bootstrap"
 
 # Iterate until successful bootstrap
-logging "Starting bootstrap with empty driver file:\n $(cat $driver_file)\n" "${base_dir}/main.log"
+logging "Starting bootstrap with empty driver file:\n $(cat $driver_file)\n" "${main_log}"
 count=0
 exit_code=1
 while [ $exit_code -ne 0 ]
 do
   rm -rf $workspace_dir && mkdir $workspace_dir
-  logging " --- ITERATION $count --- " "${base_dir}/main.log"
+  logging " --- ITERATION $count --- " "${main_log}"
   bootstrap $driver_file $SCRAM_ARCH $workspace_dir "$logfile_dir/bootstrap_${count}.log"  # bootstrap() resets exit_code
   if [ $exit_code -ne 0 ]
   then
-    string_element=$(find_provides_from_log "$logfile_dir/bootstrap_${count}.log" "${base_dir}/main.log")
+    string_element=$(find_provides_from_log "$logfile_dir/bootstrap_${count}.log" "${main_log}")
     if [ -n "$string_element" ]
     then
       echo "${cmsos}_platformSeeds+=\"$string_element\"" >> $driver_file
     fi
     let count++
   fi
-  logging " ---> Successful bootstrap! Final driver file:\n $(cat $driver_file)" "${base_dir}/main.log"
+  logging " ---> Successful bootstrap! Final driver file:\n $(cat $driver_file)" "${main_log}"
 done
 
 echo "Starting installation"
 
-logging "Starting CMSSW installation ..." "${base_dir}/main.log"
+logging "Starting CMSSW installation ..." "${main_log}"
 # Search for CMSSW
 for release in $(bash ${workspace_dir}/common/cmspkg -a $SCRAM_ARCH search cmssw | grep -o cms+cmssw+CMSSW.*- | cut -d' ' -f1);
 do
   count=0
   install_exit_code=1
-  logging "Installing CMSSW release $release ..." "${base_dir}/main.log"
+  logging "Installing CMSSW release $release ..." "${main_log}"
   while [ $install_exit_code -ne 0 ]
   do
-    logging " --- ITERATION $count --- " "${base_dir}/main.log"
+    logging " --- ITERATION $count --- " "${main_log}"
     # Install all release cycles
     bash ${workspace_dir}/common/cmspkg -a $SCRAM_ARCH install -y $release > "$logfile_dir/${release}_install_${count}.log" 2>&1
     install_exit_code=$(echo $?)
     if [ $install_exit_code -ne 0 ]
     then
-      find_provides_from_log "$logfile_dir/${release}_install_${count}.log" "${base_dir}/main.log"
+      find_provides_from_log "$logfile_dir/${release}_install_${count}.log" "${main_log}"
       if [ -n "$string_element" ]
       then
         echo "${cmsos}_platformSeeds+=\"$string_element\"" >> $driver_file
@@ -149,11 +150,11 @@ do
       bootstrap $driver_file $SCRAM_ARCH $workspace_dir "$logfile_dir/${release}_bootstrap_${count}.log"
       let count++
     else
-      logging " ---> Successful installation for $release! Final driver file:\n $(cat $driver_file)" "${base_dir}/main.log"
+      logging " ---> Successful installation for $release! Final driver file:\n $(cat $driver_file)" "${main_log}"
       rm -rf $workspace_dir && mkdir $workspace_dir
-      bootstrap $driver_file $SCRAM_ARCH $workspace_dir "$logfile_dir/${release}_bootstrap__newcycle.log"
+      bootstrap $driver_file $SCRAM_ARCH $workspace_dir "$logfile_dir/${release}_bootstrap_newcycle.log"
     fi
-      logging "Exit code from installation: $install_exit_code" "${base_dir}/main.log"
+      logging "Exit code from installation: $install_exit_code" "${main_log}"
   done
 done
 
