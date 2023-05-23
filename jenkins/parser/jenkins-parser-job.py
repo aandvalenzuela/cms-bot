@@ -174,6 +174,7 @@ def check_and_trigger_action(
         )
 
         build_file_path = os.path.join(build_dir_path, "build.xml")
+        print("---> FILE PATH:", build_file_path)
         display_name = (
             helpers.grep(build_file_path, "<displayName>", True)
             .replace("<displayName>", "")
