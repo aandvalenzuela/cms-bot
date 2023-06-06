@@ -82,7 +82,7 @@ find_provides_from_log() {
 	    if [ -z "$package" ]
             then
 	      scram_string_element+=" $pkg"
-	      logging "[SCRAM] Adding $pkg that provides $provide ..." $main_log
+	      logging "[SCRAM] Adding $pkg that provides $dependent_pkg ..." $main_log
             fi
 	  fi
         else
@@ -94,7 +94,7 @@ find_provides_from_log() {
             if [ -z "$package" ]
             then
               fakesystem_string_element+=" $pkg"
-              logging "[FAKESYSTEM] Adding $pkg that provides $provide ..." $main_log
+              logging "[FAKESYSTEM] Adding $pkg that provides $dependent_pkg ..." $main_log
             fi
           else
 	    pkg=$(rpm -q --whatprovides $dependency --qf "%{NAME}\n" | tail -1)
@@ -105,7 +105,7 @@ find_provides_from_log() {
               if [ -z "$package" ]
               then
                 rpm_string_element+=" $pkg"
-               logging "[RPM] Adding $pkg that provides $provide ..." $main_log
+               logging "[RPM] Adding $pkg that provides $dependent_pkg ..." $main_log
               fi
 	    fi
 	  fi
