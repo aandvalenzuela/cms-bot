@@ -35,34 +35,86 @@ bootstrap_reseed() {
   workspace_dir=$3
   log_file=$4
 
-  sh bootstrap.sh -y -driver $driver_file -a $SCRAM_ARCH -p $workspace_dir reseed > $log_file 2>&1
+  sh bootstrap.sh -y -driver $driver_file -a $SCRAM_ARCH -p $workspace_dir setup > $log_file 2>&1
   exit_code=$(echo $?)
 }
+
+#find_provides_from_log() {
+#  log=$1
+#  main_log=$2
+#  string_element=""
+#  logging "Analyzing log $1..." "${main_log}"
+#  for provide in $(cat $log | grep ".* is needed by" | cut -d " " -f1)
+#  do
+#        pkg=$(rpm -q --whatprovides $provide --qf "%{NAME}\n" | tail -1)
+#        noprovide=$(echo $pkg | grep "no package provides")
+#        if [ -n "$noprovide" ]
+#        then
+#          continue
+#        fi
+#        package=$(echo $string_element | grep $pkg)
+#        if [ -z "$package" ]
+#        then
+#           string_element+=" $pkg"
+#           logging "Adding $pkg that provides $provide ..." $main_log
+#        fi
+#    done
+#}
 
 find_provides_from_log() {
   log=$1
   main_log=$2
-  string_element=""
-  for provide in $(cat $log | grep ".* is needed by" | cut -d " " -f1)
+  scram_string_element=""
+  rpm_string_element=""
+  fakesystem_string_element=""
+  for provide in $(cat $log | grep ".* is needed by" | awk '{printf "%s*%s\n", $1, $NF}')
   do
-        pkg=$(rpm -q --whatprovides $provide --qf "%{NAME}\n" | tail -1)
-        noprovide=$(echo $pkg | grep "no package provides")
-        if [ -n "$noprovide" ]
-        then
-          continue
-        fi
-        package=$(echo $string_element | grep $pkg)
-        if [ -z "$package" ]
-        then
-           string_element+=" $pkg"
-           logging "Adding $pkg that provides $provide ..." $main_log
-        fi
+	dependency=$(echo $provide | cut -d '*' -f1)
+	dependent_pkg=$(echo $provide | cut -d '*' -f2)
+	scram_flag=$(echo $dependent_pkg | grep "SCRAM")
+	if [ -n "$scram_flag" ]
+	then
+	  pkg=$(rpm -q --whatprovides $dependency --qf "%{NAME}\n" | tail -1)
+	  noprovide=$(echo $pkg | grep "no package provides")
+	  if [ -z "$noprovide" ]
+          then
+	    package=$(echo $scram_string_element | grep $pkg)
+	    if [ -z "$package" ]
+            then
+	      scram_string_element+=" $pkg"
+	      logging "[SCRAM] Adding $pkg that provides $provide ..." $main_log
+            fi
+	  fi
+        else
+          pkg=$(rpm -q --whatprovides $provide --qf "%{NAME}\n" | tail -1)
+	  fakesystem_flag=$(echo -n $pkg | grep "fakesystem")
+	  if [ -n "$fakesystem_flag" ]
+	  then
+	    package=$(echo $fakesystem_string_element | grep $pkg)
+            if [ -z "$package" ]
+            then
+              fakesystem_string_element+=" $pkg"
+              logging "[FAKESYSTEM] Adding $pkg that provides $provide ..." $main_log
+            fi
+          else
+	    pkg=$(rpm -q --whatprovides $dependency --qf "%{NAME}\n" | tail -1)
+            noprovide=$(echo $pkg | grep "no package provides")
+            if [ -z "$noprovide" ]
+            then
+              package=$(echo $rpm_string_element | grep $pkg)
+              if [ -z "$package" ]
+              then
+                rpm_string_element+=" $pkg"
+               logging "[RPM] Adding $pkg that provides $provide ..." $main_log
+              fi
+	    fi
+	  fi
+	fi
     done
 }
 
-echo "Here I am: $(pwd)"
 # Bootstrap with driver file from the installation
-sh bootstrap.sh -debug -driver cmssw-driver-files/el8_amd64_gcc11.txt -a $SCRAM_ARCH -p BUILD setup
+sh -ex bootstrap.sh -debug -driver $driver_file -a $SCRAM_ARCH -p $bootstrap_dir setup > "$logfile_dir/${release}_bootstrap_setup.log" 2>&1
 # Symlink rpm-env.sh to avoid bootstrapping during the build process
 ln -sf $workspace_dir/BUILD/el8_amd64_gcc11/external/rpm/*/etc/profile.d/init.sh $workspace_dir/BUILD/el8_amd64_gcc11/rpm-env.sh
 
@@ -81,13 +133,24 @@ while [ $build_exit_code -ne 0 ]
     if [ $build_exit_code -ne 0 ]
     then
       find_provides_from_log "$logfile_dir/${release}_build_${count}.log" "${main_log}"
-      if [ -n "$string_element" ]
+      if [ -n "$rpm_string_element" ]
       then
-        echo "${cmsos}_platformBuildSeeds+=\"$string_element\"" >> $driver_file
+        echo "${cmsos}_platformSeeds+=\"$rpm_string_element\"" >> $driver_file
+      fi
+      if [ -n "$scram_string_element" ]
+      then
+        echo "platformSeeds+=\"$scram_string_element\"" >> $driver_file
+      fi
+      if [ -n "$fakesystem_string_element" ]
+      then
+        echo "additionalProvides+=\"$fakesystem_string_element\"" >> $driver_file
       fi
       # Bootstrap again with reseed
-      #rm -rf $bootstrap_dir && mkdir $bootstrap_dir
-      bootstrap_reseed $driver_file $SCRAM_ARCH $bootstrap_dir "$logfile_dir/${release}_bootstrap_${count}.log"
+      # rm -rf $bootstrap_dir && mkdir $bootstrap_dir
+      #bootstrap_reseed $driver_file $SCRAM_ARCH $bootstrap_dir "$logfile_dir/${release}_bootstrap_${count}.log"
+      logging " ---> Bootstrapping again! New driver file:\n $(cat $driver_file)" "${main_log}"
+      sh -ex bootstrap.sh -debug -driver $driver_file -a $SCRAM_ARCH -p $bootstrap_dir -seed-type "build" reseed > "$logfile_dir/${release}_bootstrap_${count}.log" 2>&1
+      # ln -sf $workspace_dir/BUILD/el8_amd64_gcc11/external/rpm/*/etc/profile.d/init.sh $workspace_dir/BUILD/el8_amd64_gcc11/rpm-env.sh
       let count++
     else
       logging " ---> Successful build for $release! Final driver file:\n $(cat $driver_file)" "${main_log}"
