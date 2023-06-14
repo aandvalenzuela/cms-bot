@@ -69,6 +69,7 @@ find_provides_from_log() {
   fakesystem_string_element=""
   for provide in $(cat $log | grep ".* is needed by" | awk '{printf "%s*%s\n", $1, $NF}')
   do
+        logging "--> New find: $provide" $main_log
 	dependency=$(echo $provide | cut -d '*' -f1)
 	dependent_pkg=$(echo $provide | cut -d '*' -f2)
 	scram_flag=$(echo $dependent_pkg | grep "SCRAM")
@@ -86,7 +87,7 @@ find_provides_from_log() {
             fi
 	  fi
         else
-          pkg=$(rpm -q --whatprovides $provide --qf "%{NAME}\n" | tail -1)
+          pkg=$(rpm -q --whatprovides $dependency --qf "%{NAME}\n" | tail -1)
 	  fakesystem_flag=$(echo -n $pkg | grep "fakesystem")
 	  if [ -n "$fakesystem_flag" ]
 	  then
