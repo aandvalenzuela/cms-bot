@@ -18,7 +18,7 @@ mkdir -p $logfile_dir
 touch $main_log
 
 driver_file="${base_dir}/${SCRAM_ARCH}_generated-driver.txt"
-cp $workspace_dir/cmssw-driver-files/el8_amd64_gcc11.txt $driver_file
+cp $workspace_dir/cmssw-driver-files/el8_amd64_gcc11-perl.txt $driver_file
 mkdir -p $bootstrap_dir
 
 logging() {
