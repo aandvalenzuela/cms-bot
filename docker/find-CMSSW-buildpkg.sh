@@ -110,7 +110,7 @@ find_provides_from_log() {
               fi
 	    else
               # Nothing on system
-	      package=$(echo $fakesystem_string_element | grep $pkg)
+	      package=$(echo $fakesystem_string_element | grep $dependency)
               if [ -z "$package" ]
 	      then
                 fakesystem_string_element+=" $dependency"
