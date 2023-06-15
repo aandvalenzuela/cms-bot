@@ -108,6 +108,14 @@ find_provides_from_log() {
                 rpm_string_element+=" $pkg"
                logging "[RPM] Adding $pkg that provides $dependent_pkg ..." $main_log
               fi
+	    else
+              # Nothing on system
+	      package=$(echo $fakesystem_string_element | grep $pkg)
+              if [ -z "$package" ]
+	      then
+                fakesystem_string_element+=" $dependency"
+                logging "[FAKESYSTEM] Adding $dependency itself that provides $dependent_pkg ..." $main_log
+	      fi
 	    fi
 	  fi
 	fi
