@@ -1,5 +1,5 @@
 export SCRAM_ARCH=el8_amd64_gcc11
-cd tmp
+cd /tmp
 mkdir workspace && cd workspace
 git clone -b CMSSW_13_2_X-docker https://github.com/aandvalenzuela/cmsdist.git
 git clone -b force-rebuild-pkgs https://github.com/aandvalenzuela/pkgtools.git
