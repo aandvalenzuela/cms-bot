@@ -4,14 +4,14 @@ cmsos=$(echo $SCRAM_ARCH | awk -F'[_]' '{print $1"_"$2}')
 # seeds=("rpm_version" "platformSeeds" "unsupportedSeeds" $cmsos"_platformSeeds" "requiredSeeds" "requiredBuildSeeds" $cmsos"_platformBuildSeeds" $cmsos"_packagesWithProvides" $cmsos_"packagesWithBuildProvides" "packageList" "additionalProvides" "defaultPkgs")
 
 base_dir=$(pwd)
-bootstrap_dir="${base_dir}/bootstrap-workspace"
+# bootstrap_dir="${base_dir}/bootstrap-workspace"
 workspace_dir="${base_dir}/workspace"
 logfile_dir="${base_dir}/logs/${SCRAM_ARCH}"
 main_log="${base_dir}/${SCRAM_ARCH}_main.log"
 mkdir -p $logfile_dir
 touch $main_log
 
-bootstrap_log="${bootstrap_dir}/bootstrapx.log"
+# bootstrap_log="${bootstrap_dir}/bootstrapx.log"
 # driver_file="${base_dir}/${SCRAM_ARCH}_generated-driver.txt"
 # rm -rf $driver_file && touch $driver_file
 
@@ -22,14 +22,16 @@ bootstrap_log="${bootstrap_dir}/bootstrapx.log"
 # Get bootstrap script. TODO: Maybe get driver directly with curl
 wget cmsrep.cern.ch/cmssw/bootstrap.sh
 chmod +x bootstrap.sh
-mv bootstrap.sh $base_dir && cd ${base_dir} 
+# mv bootstrap.sh $base_dir && cd ${base_dir} 
 
-# NO NEED OF PRE-BOOTSTRAP!!
+# NO NEED OF PRE-BOOTSTRAP!! - If area is not bootstrap, the installation will do
 # echo "Running pre-bootstrap"
 # Run bootstrap to get the required seeds
 # extra seeds: ["missingSeeds", "selSeeds"]
 # extra driver elements: rpm_version= el8_amd64_packagesWithProvides= el8_amd64_packagesWithBuildProvides= packageList= additionalProvides= defaultPkgs=
-bash -x bootstrap.sh -a $SCRAM_ARCH -p $workspace_dir setup > $bootstrap_log 2>&1
+
+echo "Starting bootstrap!"
+bash -x bootstrap.sh -a $SCRAM_ARCH -p $workspace_dir setup > "$logfile_dir/bootstrap.log" 2>&1
 
 # for seed_type in ${seeds[@]};
 # do
@@ -102,7 +104,7 @@ find_provides_from_log() {
     done
 }
 
-echo "Starting bootstrap"
+# echo "Starting bootstrap"
 
 
 
@@ -127,27 +129,27 @@ echo "Starting bootstrap"
   # logging " ---> Successful bootstrap! Final driver file:\n $(cat $driver_file)" "${main_log}"
 # done
 
-echo "Starting installation"
+echo "Starting installation!"
 
 logging "Starting CMSSW installation ..." "${main_log}"
 # Search for CMSSW
 for release in $(bash ${workspace_dir}/common/cmspkg -a $SCRAM_ARCH search cmssw | grep -o cms+cmssw+CMSSW.*- | cut -d' ' -f1);
 do
-  count=0
-  install_exit_code=1
+  # count=0
+  # install_exit_code=1
   logging "Installing CMSSW release $release ..." "${main_log}"
   # while [ $install_exit_code -ne 0 ]
   # do
   # logging " --- ITERATION $count --- " "${main_log}"
   # Install all release cycles
-  bash ${workspace_dir}/common/cmspkg -a $SCRAM_ARCH install -y $release > "$logfile_dir/${release}_install_${count}.log" 2>&1
+  bash ${workspace_dir}/common/cmspkg -a $SCRAM_ARCH install -y $release > "$logfile_dir/${release}_install.log" 2>&1
   install_exit_code=$(echo $?)
   if [ $install_exit_code -ne 0 ]
   then
     find_provides_from_log "$logfile_dir/${release}_install_${count}.log" "${main_log}"
     if [ -n "$string_element" ]
     then
-      echo "---> [MISSING] $string_element\""
+      logging "---> [MISSING] $string_element" "${main_log}"
     fi
       # Bootstrap again
       # rm -rf $workspace_dir && mkdir $workspace_dir
@@ -155,14 +157,13 @@ do
       # bash -x bootstrap.sh -a $SCRAM_ARCH -p $workspace_dir setup > "$logfile_dir/${release}_bootstrap_${count}.log" 2>&1
       # let count++
   else
-    logging " ---> Successful installation for $release!"
+    logging " ---> Successful installation for $release!" "${main_log}"
     #rm -rf $workspace_dir && mkdir $workspace_dir
-      # bootstrap $driver_file $SCRAM_ARCH $workspace_dir "$logfile_dir/${release}_bootstrap_newcycle.log"
-      #bash -x bootstrap.sh -a $SCRAM_ARCH -p $workspace_dir setup > "$logfile_dir/${release}_bootstrap_newcycle.log" 2>&1
+    # bootstrap $driver_file $SCRAM_ARCH $workspace_dir "$logfile_dir/${release}_bootstrap_newcycle.log"
+    #bash -x bootstrap.sh -a $SCRAM_ARCH -p $workspace_dir setup > "$logfile_dir/${release}_bootstrap_newcycle.log" 2>&1
   fi
-    logging "Exit code from installation: $install_exit_code" "${main_log}"
-    rm -rf $workspace_dir && mkdir $workspace_dir
-    bash -x bootstrap.sh -a $SCRAM_ARCH -p $workspace_dir setup > $bootstrap_log 2>&1
+  rm -rf $workspace_dir && mkdir $workspace_dir
+  bash -x bootstrap.sh -a $SCRAM_ARCH -p $workspace_dir setup > "$logfile_dir/bootstrap_${release}.log" 2>&1
   # done
 done
 
