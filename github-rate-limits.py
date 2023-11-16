@@ -5,7 +5,7 @@ from os.path import expanduser
 from datetime import datetime
 from socket import setdefaulttimeout
 
-from es_utils import send_payload, open_index
+from es_utils import send_payload
 from hashlib import sha1
 import json, os
 
@@ -35,7 +35,6 @@ if __name__ == "__main__":
     unique_id = JENKINS_PREFIX + "/" + str(reset_time).split(" ")[0].replace("-","") + "/" + str(reset_time).split(" ")[1].replace(":","") + "/" + str(remaining)
     unique_id = sha1(unique_id.encode()).hexdigest()
     print(unique_id)
-    # open_index(gh_api_index)
     payload = dict()
     payload["jenkins_server"] = JENKINS_PREFIX
     payload["api_limit"] = limit
