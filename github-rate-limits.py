@@ -5,7 +5,7 @@ from os.path import expanduser
 from datetime import datetime
 from socket import setdefaulttimeout
 
-from es_utils import send_payload
+from es_utils import send_payload, get_payload_wscroll
 from hashlib import sha1
 import json, os
 
