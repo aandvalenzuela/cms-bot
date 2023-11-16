@@ -62,4 +62,5 @@ if __name__ == "__main__":
 
     print("Found " + str(len(content_hash["hits"]["hits"])) + " entries!")
     for hit in content_hash["hits"]["hits"]:
+        print(hit)
         print(hit["_source"])
