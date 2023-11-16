@@ -40,6 +40,7 @@ if __name__ == "__main__":
     payload["api_limit"] = limit
     payload["api_remaining"] = remaining
     payload["reset_time"] = str(reset_time)
+    payload["@timestamp"] = current_time
 
     print(payload)
     
