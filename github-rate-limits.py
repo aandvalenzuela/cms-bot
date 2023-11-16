@@ -32,6 +32,7 @@ if __name__ == "__main__":
     gh_api_index = "cmssdt-github-api-" + str(int(((current_time / 86400000) + 4) / 7))
     gh_api_document = "github-api-data"
     unique_id = JENKINS_PREFIX + "/" + str(reset_time.split("")[0]) + "/" + str(reset_time.split("")[1]) + "/" + str(remaining)
+    print(unique_id)
     
     payload = dict()
     payload["jenkins_server"] = JENKINS_PREFIX
@@ -39,4 +40,6 @@ if __name__ == "__main__":
     payload["api_remaining"] = remaining
     payload["reset_time"] = reset_time
 
+    print(payload)
+    
     send_payload(gh_api_index, gh_api_document, unique_id, json.dumps(payload))
