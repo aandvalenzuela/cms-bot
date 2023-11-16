@@ -38,7 +38,7 @@ if __name__ == "__main__":
     payload["jenkins_server"] = JENKINS_PREFIX
     payload["api_limit"] = limit
     payload["api_remaining"] = remaining
-    payload["reset_time"] = reset_time
+    payload["reset_time"] = str(reset_time)
 
     print(payload)
     
