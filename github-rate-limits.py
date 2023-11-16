@@ -31,7 +31,7 @@ if __name__ == "__main__":
     
     gh_api_index = "cmssdt-github-api-" + str(int(((current_time / 86400000) + 4) / 7))
     gh_api_document = "github-api-data"
-    unique_id = JENKINS_PREFIX + "/" + str(reset_time).split(" ")[0] + "/" + str(reset_time).split(" ")[1] + "/" + str(remaining)
+    unique_id = JENKINS_PREFIX + "/" + str(reset_time).split(" ")[0].replace("-","") + "/" + str(reset_time).split(" ")[1].replace(":","") + "/" + str(remaining)
     print(unique_id)
     
     payload = dict()
