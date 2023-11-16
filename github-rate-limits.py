@@ -6,6 +6,7 @@ from datetime import datetime
 from socket import setdefaulttimeout
 
 from es_utils import send_payload, open_index
+from hashlib import sha1
 import json, os
 
 setdefaulttimeout(120)
@@ -32,6 +33,7 @@ if __name__ == "__main__":
     gh_api_index = "cmssdt-github-api-" + str(int(((current_time / 86400000) + 4) / 7))
     gh_api_document = "github-api-data"
     unique_id = JENKINS_PREFIX + "/" + str(reset_time).split(" ")[0].replace("-","") + "/" + str(reset_time).split(" ")[1].replace(":","") + "/" + str(remaining)
+    unique_id = sha1(unique_id.encode()).hexdigest()
     print(unique_id)
     # open_index(gh_api_index)
     payload = dict()
