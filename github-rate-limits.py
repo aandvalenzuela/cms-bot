@@ -56,9 +56,9 @@ if __name__ == "__main__":
 
     content_hash = get_payload_wscroll("cmssdt-github-api-*", query_pending_builds)
     if content_hash:
-    if (not "hits" in content_hash) or (not "hits" in content_hash["hits"]):
-        print("ERROR: ", content_hash)
-        sys.exit(1)
+        if (not "hits" in content_hash) or (not "hits" in content_hash["hits"]):
+            print("ERROR: ", content_hash)
+            sys.exit(1)
 
     print("Found " + str(len(content_hash["hits"]["hits"])) + " entries!")
     for hit in content_hash["hits"]["hits"]:
