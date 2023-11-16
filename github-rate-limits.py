@@ -24,7 +24,6 @@ if __name__ == "__main__":
         JENKINS_PREFIX = os.environ["JENKINS_URL"].strip("/").split("/")[-1]
     except:
         JENKINS_PREFIX = "jenkins"
-    LOCAL_JENKINS_URL = os.environ["LOCAL_JENKINS_URL"]
     
     # gh_api_index = "cmssdt-github-api*"
     gh_api_index = "cmssdt-github-api-" + str(int(((current_time / 86400000) + 4) / 7))
