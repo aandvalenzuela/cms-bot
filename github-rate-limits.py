@@ -9,6 +9,7 @@ setdefaulttimeout(120)
 
 if __name__ == "__main__":
     gh = Github(login_or_token=open(expanduser("~/.github-token")).read().strip())
+    print("gh object:", gh)
     print("API Rate Limit")
     print("Limit, Remaining: ", gh.rate_limiting)
     print("Reset time (GMT): ", datetime.fromtimestamp(gh.rate_limiting_resettime))
