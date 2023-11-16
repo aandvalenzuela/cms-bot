@@ -5,7 +5,7 @@ from os.path import expanduser
 from datetime import datetime
 from socket import setdefaulttimeout
 
-from es_utils import send_payload
+from es_utils import send_payload, open_index
 import json, os
 
 setdefaulttimeout(120)
@@ -33,7 +33,7 @@ if __name__ == "__main__":
     gh_api_document = "github-api-data"
     unique_id = JENKINS_PREFIX + "/" + str(reset_time).split(" ")[0].replace("-","") + "/" + str(reset_time).split(" ")[1].replace(":","") + "/" + str(remaining)
     print(unique_id)
-    
+    open_index(gh_api_index)
     payload = dict()
     payload["jenkins_server"] = JENKINS_PREFIX
     payload["api_limit"] = limit
