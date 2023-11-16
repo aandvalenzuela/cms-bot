@@ -6,7 +6,7 @@ from datetime import datetime
 from socket import setdefaulttimeout
 
 from es_utils import send_payload
-import json
+import json, os
 
 setdefaulttimeout(120)
 
