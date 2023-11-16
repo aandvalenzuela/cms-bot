@@ -6,7 +6,7 @@ from datetime import datetime
 from socket import setdefaulttimeout
 
 from es_utils import send_payload
-import json, os, datetime
+import json, os
 
 setdefaulttimeout(120)
 
@@ -26,7 +26,7 @@ if __name__ == "__main__":
         JENKINS_PREFIX = "jenkins"
     
     # gh_api_index = "cmssdt-github-api*"
-    current_time = datetime.datetime.utcnow() - datetime.datetime(1970, 1, 1)
+    current_time = datetime.utcnow() - datetime(1970, 1, 1)
     current_time = round(current_time.total_seconds() * 1000)
     
     gh_api_index = "cmssdt-github-api-" + str(int(((current_time / 86400000) + 4) / 7))
