@@ -45,7 +45,7 @@ if __name__ == "__main__":
     
     send_payload(gh_api_index, gh_api_document, unique_id, json.dumps(payload))
 
-    query_existing_info = (
+    query = (
         """{
     "query": {"bool": {"must": {"query_string": {"query": "_index:cmssdt-github-api-* AND jenkins_server:%s", "default_operator": "AND"}}}},
     "from": 0,
@@ -54,7 +54,7 @@ if __name__ == "__main__":
         % JENKINS_PREFIX
     )
 
-    content_hash = get_payload_wscroll("cmssdt-github-api-*", query_pending_builds)
+    content_hash = get_payload_wscroll("cmssdt-github-api-*", query)
     if content_hash:
         if (not "hits" in content_hash) or (not "hits" in content_hash["hits"]):
             print("ERROR: ", content_hash)
