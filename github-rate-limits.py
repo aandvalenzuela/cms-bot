@@ -19,7 +19,7 @@ if __name__ == "__main__":
     print("Limit: ", limit)
     reset_time = datetime.fromtimestamp(gh.rate_limiting_resettime)
     print("Reset time (GMT): ", reset_time)
-    print("User: ", gh.oauth_scopes)
+    print("User: ", gh.get_user("cms-sw"))
 
     JENKINS_PREFIX = "jenkins"
     try:
