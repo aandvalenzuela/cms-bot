@@ -60,7 +60,7 @@ if content_hash:
             + " minutes..."
         )
 
-        payload = {}
+        payload = dict()
         if "offline" in hit["_source"]["node_labels"]:
             offline_time = int(hit["_source"]["wait_time"]) / (60 * 1000)
             print("--> Found job in queue due to an offline node: ", hit["_source"])
