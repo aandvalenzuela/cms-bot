@@ -37,7 +37,10 @@ queue_document = "offline-data"
 max_time = 60
 current_offline_nodes = []
 
-content_hash = get_payload_wscroll("cmssdt-jenkins-queue-*", query_pending_builds)
+try:
+    content_hash = get_payload_wscroll("cmssdt-jenkins-queue-*", query_pending_builds)
+except:
+    content_hash = []
 if content_hash:
     if (not "hits" in content_hash) or (not "hits" in content_hash["hits"]):
         print("ERROR: ", content_hash)
