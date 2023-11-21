@@ -88,8 +88,10 @@ if content_hash:
                 payload["@timestamp"] = round(current_time.total_seconds() * 1000)
 
                 send_payload(queue_index, queue_document, id, json.dumps(payload))
-
-content_hash = get_payload_wscroll("cmssdt-jenkins-offline-node*", query_offline_nodes)
+try:
+    content_hash = get_payload_wscroll("cmssdt-jenkins-offline-node*", query_offline_nodes)
+except:
+    content_hash = []
 
 es_offline_nodes = []
 if content_hash:
