@@ -87,6 +87,8 @@ if content_hash:
                 current_time = datetime.datetime.utcnow() - datetime.datetime(1970, 1, 1)
                 payload["@timestamp"] = round(current_time.total_seconds() * 1000)
 
+                print(payload)
+
                 send_payload(queue_index, queue_document, id, json.dumps(payload))
 try:
     content_hash = get_payload_wscroll("cmssdt-jenkins-offline-node*", query_offline_nodes)
