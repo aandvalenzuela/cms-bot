@@ -93,9 +93,11 @@ if content_hash:
                 print(id)
 
                 send_payload(queue_index, queue_document, id, json.dumps(payload))
+                print("Sent!")
 try:
     content_hash = get_payload_wscroll("cmssdt-jenkins-offline-node*", query_offline_nodes)
 except:
+    print("exception")
     content_hash = []
 
 es_offline_nodes = []
