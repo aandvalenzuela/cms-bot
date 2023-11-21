@@ -88,6 +88,9 @@ if content_hash:
                 payload["@timestamp"] = round(current_time.total_seconds() * 1000)
 
                 print(payload)
+                print(queue_index)
+                print(queue_document)
+                print(id)
 
                 send_payload(queue_index, queue_document, id, json.dumps(payload))
 try:
