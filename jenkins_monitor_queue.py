@@ -113,7 +113,7 @@ if content_hash:
 for node in es_offline_nodes:
     if node not in current_offline_nodes:
         unique_id = JENKINS_PREFIX + "-" + node
-        id = sha1(unique_id.encode("utf-8")).hexdigest()
+        id = sha1(unique_id.encode()).hexdigest()
         hit = {"_index": "cmssdt-jenkins-offline-nodes", "_id": id}
 
         print("--> Deleting entry for node " + str(node) + ":" + str(hit))
