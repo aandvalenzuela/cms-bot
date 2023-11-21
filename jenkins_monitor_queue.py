@@ -81,7 +81,7 @@ if content_hash:
 
                 # Update data on the same id for each node
                 unique_id = JENKINS_PREFIX + "-" + node
-                id = sha1(unique_id.encode("utf-8")).hexdigest()
+                id = sha1(unique_id.encode()).hexdigest()
 
                 # Update timestamp in milliseconds
                 current_time = datetime.datetime.utcnow() - datetime.datetime(1970, 1, 1)
