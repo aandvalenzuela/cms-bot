@@ -60,6 +60,7 @@ cmd = (
 
 print("Checking existing Issue", cmd)
 exit_code, output = run_cmd(cmd)
+print(output)
 
 issues_dict = dict(output)
 print(type(issues_dict))
