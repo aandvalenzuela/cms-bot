@@ -5,7 +5,7 @@ from os.path import expanduser, abspath, dirname, join, exists
 import sys, re, json
 from argparse import ArgumentParser
 from _py2with3compatibility import run_cmd, quote
-from github_utils import add_issue_labels
+from github_utils import add_issue_labels, get_issue_labels
 
 SCRIPT_DIR = dirname(abspath(sys.argv[0]))
 
@@ -87,6 +87,9 @@ else:
     elif state == "closed":
         print("Ready for building!")
         # Add "building" label
+        existing_labels = get_issue_labels("cms-sw/cms-docker", issue_number)
+        print(existing_labels)
+        print(gh_repo.full_name)
         add_issue_labels("cms-sw/cms-docker", issue_number, ["building"])
         # Don't delete property files
         sys.exit(1)
