@@ -87,7 +87,7 @@ else:
     elif state == "closed":
         print("Ready for building!")
         # Add "building" label
-        add_issue_labels(gh_repo, issue_number, ["building"])
+        add_issue_labels("cms-sw/cms-docker", issue_number, ["building"])
         # Don't delete property files
         sys.exit(1)
 
