@@ -59,9 +59,8 @@ cmd = (
 )
 
 print("Checking existing Issue", cmd)
-issues_dict, o = run_cmd(cmd)
-print(issues_dict)
-print(o)
+o, issues_dict = run_cmd(cmd)
+
 print("Existing Issues:", issues_dict["total_count"], o)
 
 # We should have only one matching issue
