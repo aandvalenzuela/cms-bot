@@ -62,7 +62,7 @@ print("Checking existing Issue", cmd)
 exit_code, output = run_cmd(cmd)
 print(output)
 
-issues_dict = dict(output)
+issues_dict = eval(output)
 print(type(issues_dict))
 print(issues_dict)
 
