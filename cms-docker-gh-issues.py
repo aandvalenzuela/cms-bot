@@ -63,8 +63,6 @@ exit_code, output = run_cmd(cmd)
 print(output)
 
 issues_dict = json.loads(output)
-print(type(issues_dict))
-print(issues_dict)
 
 print("Existing Issues: " + str(issues_dict["total_count"]))
 
@@ -76,10 +74,10 @@ if issues_dict["total_count"] == 0:
     gh_repo.create_issue(title=args.title, body=msg, labels=args.labels)
 else:
     # Check state of the issue: open/closed/building...
-    print(issues_dict["items"]["title"])
-    print(issues_dict["items"]["number"])
+    print(issues_dict["items"][0]["title"])
+    print(issues_dict["items"][0]["number"])
 
-    state = issues_dict["items"]["state"]
+    state = issues_dict["items"][0]["state"]
     print(state)
     if state == "open":
         print("Issue is already open... Nothing to do!")
