@@ -55,21 +55,33 @@ label_str = "+label:".join([""] + [str(label) for label in args.labels])
 print(label_str)
 
 cmd = (
-    "curl -s 'https://api.github.com/search/issues?q=+repo:%s+in:title+type:issue%s' | grep '\"number\"' | head -1 | sed -e 's|.*: ||;s|,.*||'"
-    % (args.repo, label_str)
+    "curl -s 'https://api.github.com/search/issues?q=+repo:%s+in:title+type:issue%s'
 )
 
 print("Checking existing Issue", cmd)
-e, o = run_cmd(cmd)
-print("Existing Issues:", e, o)
-issue = None
-if not e:
-    try:
-        issue = gh_repo.get_issue(int(o))
-    except:
-        pass
-if not issue:
+issues_dict, o = run_cmd(cmd)
+print("Existing Issues:", issues_dict["total_count"], o)
+
+# Sanity: Check number of matching issues
+
+if issues_dict["total_count"] == 0:
     print("Creating issue request")
     gh_repo.create_issue(title=args.title, body=msg, labels=args.labels)
+else:
+    # We should have only one matching issue
+    # Check state of the issue: open/closed/building...
+    print(issues_dict["items"]["title"])
+    print(issues_dict["items"]["number"])
 
-# Check state of the issue: open/closed/building...
+    state = issues_dict["items"]["state"]
+    print(state)
+    if state == "open":
+        print("Issue is already open... Nothing to do!")
+    elif state == "close":
+        print("Ready for building!")
+        # Don't delete property files
+        sys.exit(1)
+        # Add "building" label
+
+# Delete property files
+sys.exit(0)
