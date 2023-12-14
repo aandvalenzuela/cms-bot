@@ -2,7 +2,7 @@
 from __future__ import print_function
 from github import Github
 from os.path import expanduser, abspath, dirname, join, exists
-import sys, re
+import sys, re, json
 from argparse import ArgumentParser
 from _py2with3compatibility import run_cmd, quote
 
@@ -62,7 +62,7 @@ print("Checking existing Issue", cmd)
 exit_code, output = run_cmd(cmd)
 print(output)
 
-issues_dict = eval(output)
+issues_dict = json.dumps(output)
 print(type(issues_dict))
 print(issues_dict)
 
