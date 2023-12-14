@@ -72,7 +72,7 @@ assert issues_dict["total_count"] <= 1
 
 if issues_dict["total_count"] == 0:
     print("Creating issue request")
-    gh_repo.create_issue(title=args.title, body=msg, labels=args.labels)
+    #gh_repo.create_issue(title=args.title, body=msg, labels=args.labels)
 else:
     # Check state of the issue: open/closed/building...
     issue_title = issues_dict["items"][0]["title"]
