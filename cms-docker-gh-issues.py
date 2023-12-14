@@ -59,7 +59,7 @@ cmd = (
 )
 
 print("Checking existing Issue", cmd)
-o, issues_dict = run_cmd(cmd)
+o, dict(issues_dict) = run_cmd(cmd)
 
 print(type(issues_dict))
 print(issues_dict)
