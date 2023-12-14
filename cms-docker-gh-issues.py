@@ -81,7 +81,7 @@ else:
     print(state)
     if state == "open":
         print("Issue is already open... Nothing to do!")
-    elif state == "close":
+    elif state == "closed":
         print("Ready for building!")
         # Don't delete property files
         sys.exit(1)
