@@ -70,6 +70,6 @@ if not e:
         pass
 if not issue:
     print("Creating issue request")
-    gh_repo.create_issue(args.title, msg, args.labels)
+    gh_repo.create_issue(title=args.title, body=msg, labels=args.labels)
 
 # Check state of the issue: open/closed/building...
