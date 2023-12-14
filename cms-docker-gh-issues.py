@@ -92,7 +92,7 @@ else:
         for label_obj in existing_labels:
             if label_obj["name"] == "building":
                 print("Build already triggered... Nothing to do!")
-                sys.exit(1)
+                sys.exit(0)
 
         add_issue_labels(gh_repo.full_name, issue_number, ["building"])
         # Don't delete property files
