@@ -61,7 +61,9 @@ cmd = (
 print("Checking existing Issue", cmd)
 o, issues_dict = run_cmd(cmd)
 
-print("Existing Issues:", issues_dict["total_count"], o)
+print(type(issues_dict))
+print(issues_dict)
+print("Existing Issues: " + str(issues_dict["total_count"]))
 
 # We should have only one matching issue
 assert issues_dict["total_count"] <= 1
