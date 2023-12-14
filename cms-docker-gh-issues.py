@@ -62,13 +62,13 @@ print("Checking existing Issue", cmd)
 issues_dict, o = run_cmd(cmd)
 print("Existing Issues:", issues_dict["total_count"], o)
 
-# Sanity: Check number of matching issues
+# We should have only one matching issue
+assert issues_dict["total_count"] <= 1
 
 if issues_dict["total_count"] == 0:
     print("Creating issue request")
     gh_repo.create_issue(title=args.title, body=msg, labels=args.labels)
 else:
-    # We should have only one matching issue
     # Check state of the issue: open/closed/building...
     print(issues_dict["items"]["title"])
     print(issues_dict["items"]["number"])
