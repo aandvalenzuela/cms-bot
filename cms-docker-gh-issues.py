@@ -55,7 +55,7 @@ label_str = "+label:".join([""] + [str(label) for label in args.labels])
 print(label_str)
 
 cmd = (
-    "curl -s 'https://api.github.com/search/issues?q=+repo:%s+in:title+type:issue%s'
+    "curl -s 'https://api.github.com/search/issues?q=+repo:%s+in:title+type:issue%s'" % (args.repo, label_str)
 )
 
 print("Checking existing Issue", cmd)
