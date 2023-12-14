@@ -5,6 +5,7 @@ from os.path import expanduser, abspath, dirname, join, exists
 import sys, re, json
 from argparse import ArgumentParser
 from _py2with3compatibility import run_cmd, quote
+from github_utils import add_issue_labels
 
 SCRIPT_DIR = dirname(abspath(sys.argv[0]))
 
@@ -74,8 +75,10 @@ if issues_dict["total_count"] == 0:
     gh_repo.create_issue(title=args.title, body=msg, labels=args.labels)
 else:
     # Check state of the issue: open/closed/building...
-    print(issues_dict["items"][0]["title"])
-    print(issues_dict["items"][0]["number"])
+    issue_title = issues_dict["items"][0]["title"]
+    print(issue_title)
+    issue_number = issues_dict["items"][0]["number"]
+    print(issue_number)
 
     state = issues_dict["items"][0]["state"]
     print(state)
@@ -83,9 +86,10 @@ else:
         print("Issue is already open... Nothing to do!")
     elif state == "closed":
         print("Ready for building!")
+        # Add "building" label
+        add_issue_labels(gh_repo, issue_number, "building")
         # Don't delete property files
         sys.exit(1)
-        # Add "building" label
 
 # Delete property files
 sys.exit(0)
