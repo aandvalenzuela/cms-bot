@@ -74,7 +74,7 @@ if issues_dict["total_count"] == 0:
     print("Creating issue request")
     #gh_repo.create_issue(title=args.title, body=msg, labels=args.labels)
 else:
-    # Check state of the issue: open/closed/building...
+    # Check state of the issue: open/closed...
     issue_title = issues_dict["items"][0]["title"]
     print(issue_title)
     issue_number = issues_dict["items"][0]["number"]
@@ -86,11 +86,15 @@ else:
         print("Issue is already open... Nothing to do!")
     elif state == "closed":
         print("Ready for building!")
-        # Add "building" label
-        existing_labels = get_issue_labels("cms-sw/cms-docker", issue_number)
+        # Process "building" label
+        existing_labels = get_issue_labels(gh_repo.full_name, issue_number)
         print(existing_labels)
-        print(gh_repo.full_name)
-        add_issue_labels("cms-sw/cms-docker", issue_number, ["building"])
+        for label_obj in existing_labels:
+            if label_obj["name"] == "building":
+                print("Build already triggered... Nothing to do!")
+                sys.exit(1)
+
+        add_issue_labels(gh_repo.full_name, issue_number, ["building"])
         # Don't delete property files
         sys.exit(1)
 
