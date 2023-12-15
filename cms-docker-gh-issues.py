@@ -78,7 +78,7 @@ if issues_dict["total_count"] == 1:
     #gh_repo.create_issue(title=args.title, body=msg, labels=args.labels)
 
     print("Checking existing PR with matching labels", pulls_curl)
-    exit_code, pulls_obj = run_cmd(pulls_obj)
+    exit_code, pulls_obj = run_cmd(pulls_curl)
     pulls_obj = json.loads(pull)
     print(pulls_obj)
     print("---------------------------------------------------------")
