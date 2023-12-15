@@ -83,7 +83,6 @@ if issues_dict["total_count"] == 1:
     
     urls = ""
     for pull in pulls_obj:
-        print(pull)
         pull = json.loads(pull)
         print(pull["url"])
         urls += str(pull["url"]) + ""
