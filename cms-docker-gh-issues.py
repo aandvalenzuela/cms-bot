@@ -79,8 +79,9 @@ if issues_dict["total_count"] == 1:
 
     print("Checking existing PR with matching labels", pulls_curl)
     exit_code, pulls_obj = run_cmd(pulls_curl)
-    #print(pulls_obj)
-    
+    print(pulls_obj)
+    print("---------------------------------------------------------")
+    print(pulls_obj[0])
     urls = ""
     for pull in pulls_obj:
         #pull = json.loads(pull)
