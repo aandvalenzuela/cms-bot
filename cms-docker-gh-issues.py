@@ -75,7 +75,7 @@ assert issues_dict["total_count"] <= 1
 
 if issues_dict["total_count"] == 0:
     print("Creating issue request")
-    gh_repo.create_issue(title=args.title, body=msg, labels=args.labels)
+    #gh_repo.create_issue(title=args.title, body=msg, labels=args.labels)
 
     print("Checking existing PR with matching labels", pulls_curl)
     exit_code, pulls_obj = run_cmd(pulls_curl)
@@ -95,7 +95,7 @@ if issues_dict["total_count"] == 0:
     # Comment related PRs
     issue_comment = "The following PRs should be probably merged before building the new image: " + urls
     print(issue_comment)
-    create_issue_comment(gh_repo.full_name, issue_number, issue_comment)
+    #create_issue_comment(gh_repo.full_name, issue_number, issue_comment)
 else:
     # Check state of the issue: open/closed...
     issue_title = issues_dict["items"][0]["title"]
