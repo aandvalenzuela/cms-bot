@@ -55,24 +55,47 @@ print("Authentication succeeeded to " + str(gh_repo))
 label_str = "+label:".join([""] + [str(label) for label in args.labels])
 print(label_str)
 
-cmd = (
+issues_curl = (
     "curl -s 'https://api.github.com/search/issues?q=+repo:%s+in:title+type:issue%s'" % (args.repo, label_str)
 )
 
-print("Checking existing Issue", cmd)
-exit_code, output = run_cmd(cmd)
-print(output)
+pulls_curl = (
+    "curl -s 'https://api.github.com/repos/%s/pulls?q=+is:open+label:%s'" % (args.repo, args.labels[0])
+)
 
-issues_dict = json.loads(output)
+print("Checking existing Issue", issues_curl)
+exit_code, issues_obj = run_cmd(issues_curl)
+print(issues_obj)
 
+issues_dict = json.loads(issues_obj)
 print("Existing Issues: " + str(issues_dict["total_count"]))
 
 # We should have only one matching issue
 assert issues_dict["total_count"] <= 1
 
-if issues_dict["total_count"] == 0:
+if issues_dict["total_count"] == 1:
     print("Creating issue request")
     #gh_repo.create_issue(title=args.title, body=msg, labels=args.labels)
+
+    print("Checking existing PR with matching labels", pulls_curl)
+    exit_code, pulls_obj = run_cmd(pulls_curl)
+    print(pulls_obj)
+    urls = ""
+    for pull in pulls_obj:
+        urls += str(pull["url"]) + ""
+    print("The following PRs have matching labels: ", urls)
+
+    # Get current issue number
+    print("Check newly created Issue", issues_curl)
+    exit_code, issues_obj = run_cmd(issues_curl)
+    print(issues_obj)
+    issues_dict = json.loads(issues_obj)
+    issue_number = issues_dict["items"][0]["number"]
+    print(issue_number)
+
+    # Comment related PRs
+    issue_comment = "The following PRs should be probably merged before building the new image: " + urls
+    create_issue_comment(gh_repo.full_name, issue_number, issue_comment)
 else:
     # Check state of the issue: open/closed...
     issue_title = issues_dict["items"][0]["title"]
