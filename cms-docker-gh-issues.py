@@ -73,20 +73,15 @@ print("Existing Issues: " + str(issues_dict["total_count"]))
 # We should have only one matching issue
 assert issues_dict["total_count"] <= 1
 
-if issues_dict["total_count"] == 1:
+if issues_dict["total_count"] == 0:
     print("Creating issue request")
-    #gh_repo.create_issue(title=args.title, body=msg, labels=args.labels)
+    gh_repo.create_issue(title=args.title, body=msg, labels=args.labels)
 
     print("Checking existing PR with matching labels", pulls_curl)
     exit_code, pulls_obj = run_cmd(pulls_curl)
     pulls_obj = json.loads(pulls_obj)
-    print(pulls_obj)
-    print("---------------------------------------------------------")
-    print(pulls_obj[0])
     urls = ""
     for pull in pulls_obj:
-        #pull = json.loads(pull)
-        print(pull)
         print(pull["html_url"])
         urls += str(pull["html_url"]) + " "
     print("The following PRs have matching labels: ", urls)
@@ -94,10 +89,8 @@ if issues_dict["total_count"] == 1:
     # Get current issue number
     print("Check newly created Issue", issues_curl)
     exit_code, issues_obj = run_cmd(issues_curl)
-    print(issues_obj)
     issues_dict = json.loads(issues_obj)
     issue_number = issues_dict["items"][0]["number"]
-    print(issue_number)
 
     # Comment related PRs
     issue_comment = "The following PRs should be probably merged before building the new image: " + urls
