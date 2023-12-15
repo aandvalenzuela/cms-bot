@@ -85,7 +85,7 @@ if issues_dict["total_count"] == 1:
     for pull in pulls_obj:
         #pull = json.loads(pull)
         print(pull)
-        print(pull["url"])
+        #print(pull["url"])
         urls += str(pull["url"]) + ""
     print("The following PRs have matching labels: ", urls)
 
