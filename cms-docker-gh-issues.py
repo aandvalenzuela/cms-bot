@@ -5,7 +5,7 @@ from os.path import expanduser, abspath, dirname, join, exists
 import sys, re, json
 from argparse import ArgumentParser
 from _py2with3compatibility import run_cmd, quote
-from github_utils import add_issue_labels, get_issue_labels
+from github_utils import add_issue_labels, create_issue_comment, get_issue_labels
 
 SCRIPT_DIR = dirname(abspath(sys.argv[0]))
 
@@ -87,8 +87,8 @@ if issues_dict["total_count"] == 1:
     for pull in pulls_obj:
         #pull = json.loads(pull)
         print(pull)
-        print(pull["url"])
-        urls += str(pull["url"]) + ""
+        print(pull["html_url"])
+        urls += str(pull["html_url"]) + " "
     print("The following PRs have matching labels: ", urls)
 
     # Get current issue number
@@ -101,6 +101,7 @@ if issues_dict["total_count"] == 1:
 
     # Comment related PRs
     issue_comment = "The following PRs should be probably merged before building the new image: " + urls
+    print(issue_comment)
     create_issue_comment(gh_repo.full_name, issue_number, issue_comment)
 else:
     # Check state of the issue: open/closed...
