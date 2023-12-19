@@ -67,7 +67,7 @@ assert issues_dict["total_count"] <= 1
 
 if issues_dict["total_count"] == 0:
   print("No matching issues found, skipping...")
-else
+else:
   print("Adding issue comment...")
   issue_title = issues_dict["items"][0]["title"]
   print(issue_title)
