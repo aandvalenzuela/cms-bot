@@ -51,6 +51,9 @@ gh = Github(login_or_token=open(expanduser(repo_config.GH_TOKEN)).read().strip()
 gh_repo = gh.get_repo(args.repo)
 print("Authentication succeeeded to " + str(gh_repo))
 
+label_str = "+label:".join([""] + [str(label) for label in args.labels])
+print(label_str)
+
 issues_curl = (
     "curl -s 'https://api.github.com/search/issues?q=+repo:%s+in:title+type:issue%s'" % (args.repo, label_str)
 )
