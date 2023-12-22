@@ -82,9 +82,9 @@ if args.comment == False:
     # We should have only one matching issue
     assert issues_dict["total_count"] <= 1
 
-    if issues_dict["total_count"] == 0:
+    if issues_dict["total_count"] == 1:
         print("Creating issue request")
-        gh_repo.create_issue(title=args.title, body=msg, labels=args.labels)
+        #gh_repo.create_issue(title=args.title, body=msg, labels=args.labels)
 
         print("Checking existing PR with matching labels", pulls_curl)
         exit_code, pulls_obj = run_cmd(pulls_curl)
@@ -105,6 +105,7 @@ if args.comment == False:
             "The following PRs should be probably merged before building the new image: " + urls
         )
         create_issue_comment(gh_repo.full_name, issue_number, issue_comment)
+        sys.exit(0)
     else:
         # Check state of the issue: open/closed...
         issue_title = issues_dict["items"][0]["title"]
