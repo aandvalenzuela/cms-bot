@@ -84,7 +84,7 @@ if args.comment == False:
 
     if issues_dict["total_count"] == 0:
         print("Creating issue request")
-        gh_repo.create_issue(title=args.title, body=msg, labels=args.labels)
+        #gh_repo.create_issue(title=args.title, body=msg, labels=args.labels)
 
         print("Checking existing PR with matching labels", pulls_curl)
         exit_code, pulls_obj = run_cmd(pulls_curl)
@@ -104,7 +104,7 @@ if args.comment == False:
         issue_comment = (
             "The following PRs should be probably merged before building the new image: " + urls
         )
-        create_issue_comment(gh_repo.full_name, issue_number, issue_comment)
+        #create_issue_comment(gh_repo.full_name, issue_number, issue_comment)
     else:
         # Check state of the issue: open/closed...
         issue_title = issues_dict["items"][0]["title"]
@@ -123,7 +123,7 @@ if args.comment == False:
                     print("Build already triggered... Nothing to do!")
                     sys.exit(0)
 
-            add_issue_labels(gh_repo.full_name, issue_number, ["building"])
+            #add_issue_labels(gh_repo.full_name, issue_number, ["building"])
             # Don't delete property files
             sys.exit(1)
 
@@ -146,4 +146,4 @@ else:
         print("Adding issue comment...")
         issue_title = issues_dict["items"][0]["title"]
         issue_number = issues_dict["items"][0]["number"]
-        create_issue_comment(gh_repo.full_name, issue_number, msg)
+        #create_issue_comment(gh_repo.full_name, issue_number, msg)
