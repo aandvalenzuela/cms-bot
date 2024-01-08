@@ -68,4 +68,5 @@ print("*** ", label_list)
 
 issues = gh_repo.get_issues(labels=label_list)
 
-print(issues[0])
+for issue in issues:
+    print("-->", issue)
