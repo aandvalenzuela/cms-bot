@@ -70,3 +70,5 @@ issues = gh_repo.get_issues(labels=label_list)
 
 for issue in issues:
     print("-->", issue)
+    print(issue.title)
+    print(issue.number)
