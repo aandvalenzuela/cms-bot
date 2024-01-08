@@ -86,19 +86,31 @@ if args.comment == False:
         print("Creating issue request")
         gh_repo.create_issue(title=args.title, body=msg, labels=args.labels)
 
-        print("Checking existing PR with matching labels", pulls_curl)
-        exit_code, pulls_obj = run_cmd(pulls_curl)
-        pulls_obj = json.loads(pulls_obj)
-        urls = ""
-        for pull in pulls_obj:
-            urls += str(pull["html_url"]) + " "
-        print("The following PRs have matching labels: ", urls)
+        #print("Checking existing PR with matching labels", pulls_curl)
+        #exit_code, pulls_obj = run_cmd(pulls_curl)
+        #pulls_obj = json.loads(pulls_obj)
+        #urls = ""
+        #for pull in pulls_obj:
+        #    urls += str(pull["html_url"]) + " "
+        #print("The following PRs have matching labels: ", urls)
 
+        print("Labels: ", args.labels)
+        issues = gh_repo.get_issues(labels=[str(label) for label in args.labels])
+        urls = []
+        for issue in issues:
+            print("-->", issue)
+            print(issue.title)
+            print(issue.number)
+            print("URL: https://github.com/cms-sw/cms-docker/issues/" + str(issue.number))
+
+            url = "https://github.com/cms-sw/cms-docker/issues/" + str(issue.number)
+            urls.append(url)
+        
         # Get current issue number
-        print("Check newly created Issue", issues_curl)
-        exit_code, issues_obj = run_cmd(issues_curl)
-        issues_dict = json.loads(issues_obj)
-        issue_number = issues_dict["items"][0]["number"]
+        #print("Check newly created Issue", issues_curl)
+        #exit_code, issues_obj = run_cmd(issues_curl)
+        #issues_dict = json.loads(issues_obj)
+        #issue_number = issues_dict["items"][0]["number"]
 
         # Comment related PRs
         issue_comment = (
