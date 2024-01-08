@@ -66,4 +66,6 @@ label_str = "+label:".join([""] + [str(label) for label in args.labels])
 label_list = [str(label) for label in args.labels]
 print("*** ", label_list)
 
-gh_repo.get_issues(labels=label_list)
+issues = gh_repo.get_issues(labels=label_list)
+
+print(issues)
