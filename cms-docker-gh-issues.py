@@ -84,7 +84,7 @@ if args.comment == False:
 
     if issues_dict["total_count"] == 0:
         print("Creating issue request")
-        # gh_repo.create_issue(title=args.title, body=msg, labels=args.labels)
+        gh_repo.create_issue(title=args.title, body=msg, labels=args.labels)
 
         print("Title: ", args.title)
         print("Msg: ", msg)
@@ -100,6 +100,8 @@ if args.comment == False:
 
         issues = gh_repo.get_issues(labels=[str(label) for label in args.labels])
 
+        issue_number = "254"
+        
         for issue in issues:
             print("-->", issue)
             print(issue.title)
@@ -110,23 +112,17 @@ if args.comment == False:
                 issue_number = issue.number
             else:
                 print("Issue doesn't exist!")
+                print(issue.number)
         
         print("Finished processing issues!")
-        # Get current issue number
-        #print("Check newly created Issue", issues_curl)
-        #exit_code, issues_obj = run_cmd(issues_curl)
-        #issues_dict = json.loads(issues_obj)
-        #issue_number = issues_dict["items"][0]["number"]
 
         # Comment related PRs
         issue_comment = (
             "The following PRs should be probably merged before building the new image: \n" + urls
         )
         print(issue_comment)
-        #create_issue_comment(gh_repo.full_name, issue_number, issue_comment)
-        sys.exit(0)
+        create_issue_comment(gh_repo.full_name, issue_number, issue_comment)
     else:
-        sys.exit(0)
         # Check state of the issue: open/closed...
         issue_title = issues_dict["items"][0]["title"]
         issue_number = issues_dict["items"][0]["number"]
