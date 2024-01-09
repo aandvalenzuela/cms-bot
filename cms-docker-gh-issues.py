@@ -61,12 +61,12 @@ gh = Github(login_or_token=open(expanduser(repo_config.GH_TOKEN)).read().strip()
 gh_repo = gh.get_repo(args.repo)
 print("Authentication succeeeded to " + str(gh_repo.full_name))
 
-#label_str = "+label:".join([""] + [str(label) for label in args.labels])
+label_str = "+label:".join([""] + [str(label) for label in args.labels])
 
-#issues_curl = "curl -s 'https://api.github.com/search/issues?q=+repo:%s+in:title+type:issue%s'" % (
-#    args.repo,
-#    label_str,
-#)
+issues_curl = "curl -s 'https://api.github.com/search/issues?q=+repo:%s+in:title+type:issue%s'" % (
+    args.repo,
+    label_str,
+)
 
 if args.comment == False:
     pulls_curl = "curl -s 'https://api.github.com/repos/%s/pulls?q=+is:open+label:%s'" % (
@@ -85,6 +85,10 @@ if args.comment == False:
     if issues_dict["total_count"] == 0:
         print("Creating issue request")
         # gh_repo.create_issue(title=args.title, body=msg, labels=args.labels)
+
+        print("Title: ", args.title)
+        print("Msg: ", msg)
+        print("Labels: ", args.labels)
 
         print("Checking existing PR with matching labels", pulls_curl)
         exit_code, pulls_obj = run_cmd(pulls_curl)
@@ -107,6 +111,7 @@ if args.comment == False:
             else:
                 print("Issue doesn't exist!")
         
+        print("Finished processing issues!")
         # Get current issue number
         #print("Check newly created Issue", issues_curl)
         #exit_code, issues_obj = run_cmd(issues_curl)
