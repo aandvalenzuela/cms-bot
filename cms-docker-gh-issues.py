@@ -112,7 +112,6 @@ if args.comment == False:
                 issue_number = issue.number
             else:
                 print("Issue doesn't exist!")
-                print(issue.number)
         
         print("Finished processing issues!")
 
