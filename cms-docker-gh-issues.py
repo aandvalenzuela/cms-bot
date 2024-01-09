@@ -105,11 +105,7 @@ if args.comment == False:
             print(issue.title)
             print(args.title)
             print(issue.number)
-            if issue.title == args.title:
-                print("Issue exists!")
-                issue_number = issue.number
-            else:
-                print("Issue doesn't exist!")
+            issue_number = issue.number
         
         print("Finished processing issues!")
 
