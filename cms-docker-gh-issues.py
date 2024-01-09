@@ -61,12 +61,12 @@ gh = Github(login_or_token=open(expanduser(repo_config.GH_TOKEN)).read().strip()
 gh_repo = gh.get_repo(args.repo)
 print("Authentication succeeeded to " + str(gh_repo.full_name))
 
-label_str = "+label:".join([""] + [str(label) for label in args.labels])
+#label_str = "+label:".join([""] + [str(label) for label in args.labels])
 
-issues_curl = "curl -s 'https://api.github.com/search/issues?q=+repo:%s+in:title+type:issue%s'" % (
-    args.repo,
-    label_str,
-)
+#issues_curl = "curl -s 'https://api.github.com/search/issues?q=+repo:%s+in:title+type:issue%s'" % (
+#    args.repo,
+#    label_str,
+#)
 
 if args.comment == False:
     pulls_curl = "curl -s 'https://api.github.com/repos/%s/pulls?q=+is:open+label:%s'" % (
@@ -84,27 +84,28 @@ if args.comment == False:
 
     if issues_dict["total_count"] == 0:
         print("Creating issue request")
-        gh_repo.create_issue(title=args.title, body=msg, labels=args.labels)
+        # gh_repo.create_issue(title=args.title, body=msg, labels=args.labels)
 
-        #print("Checking existing PR with matching labels", pulls_curl)
-        #exit_code, pulls_obj = run_cmd(pulls_curl)
-        #pulls_obj = json.loads(pulls_obj)
-        #urls = ""
-        #for pull in pulls_obj:
-        #    urls += str(pull["html_url"]) + " "
-        #print("The following PRs have matching labels: ", urls)
+        print("Checking existing PR with matching labels", pulls_curl)
+        exit_code, pulls_obj = run_cmd(pulls_curl)
+        pulls_obj = json.loads(pulls_obj)
+        urls = ""
+        for pull in pulls_obj:
+            urls += "* " + str(pull["html_url"]) + "\n"
+        print("The following PRs have matching labels: \n", urls)
 
-        print("Labels: ", args.labels)
         issues = gh_repo.get_issues(labels=[str(label) for label in args.labels])
-        urls = []
+
         for issue in issues:
             print("-->", issue)
             print(issue.title)
+            print(args.title)
             print(issue.number)
-            print("URL: https://github.com/cms-sw/cms-docker/issues/" + str(issue.number))
-
-            url = "https://github.com/cms-sw/cms-docker/issues/" + str(issue.number)
-            urls.append(url)
+            if issue.title == args.title:
+                print("Issue exists!")
+                issue_number = issue.number
+            else:
+                print("Issue doesn't exist!")
         
         # Get current issue number
         #print("Check newly created Issue", issues_curl)
@@ -114,10 +115,13 @@ if args.comment == False:
 
         # Comment related PRs
         issue_comment = (
-            "The following PRs should be probably merged before building the new image: " + urls
+            "The following PRs should be probably merged before building the new image: \n" + urls
         )
-        create_issue_comment(gh_repo.full_name, issue_number, issue_comment)
+        print(issue_comment)
+        #create_issue_comment(gh_repo.full_name, issue_number, issue_comment)
+        sys.exit(0)
     else:
+        sys.exit(0)
         # Check state of the issue: open/closed...
         issue_title = issues_dict["items"][0]["title"]
         issue_number = issues_dict["items"][0]["number"]
