@@ -95,7 +95,7 @@ if args.comment == False:
         pulls_obj = json.loads(pulls_obj)
         urls = ""
         for pull in pulls_obj:
-            urls += "* [" + str(pull["html_url"]) + "] " + str(pull["title"]) + "\n"
+            urls += "* " + str(pull["html_url"]) + "\n"
         print("The following PRs have matching labels: \n", urls)
 
         issues = gh_repo.get_issues(labels=[str(label) for label in args.labels])
