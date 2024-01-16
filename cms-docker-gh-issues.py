@@ -110,11 +110,12 @@ if args.comment == False:
         print("Finished processing issues!")
 
         # Comment related PRs
-        issue_comment = (
-            "The following PRs should be probably merged before building the new image: \n" + urls
-        )
-        print(issue_comment)
-        create_issue_comment(gh_repo.full_name, issue_number, issue_comment)
+        if urls != "":
+            issue_comment = (
+                "The following PRs should be probably merged before building the new image: \n" + urls
+            )
+            print(issue_comment)
+            create_issue_comment(gh_repo.full_name, issue_number, issue_comment)
     else:
         # Check state of the issue: open/closed...
         issue_title = issues_dict["items"][0]["title"]
