@@ -69,7 +69,8 @@ issues_curl = "curl -s 'https://api.github.com/search/issues?q=+repo:%s+in:title
 )
 
 if args.comment == False:
-    pulls_curl = "curl -s 'https://api.github.com/repos/%s/pulls?q=+is:open+label:%s'" % (
+
+    pulls_curl = "curl -s 'https://api.github.com/repos/%s/issues?state=open&labels=%s'" % (
         args.repo,
         args.labels[0],
     )
@@ -84,7 +85,7 @@ if args.comment == False:
 
     if issues_dict["total_count"] == 0:
         print("Creating issue request")
-        gh_repo.create_issue(title=args.title, body=msg, labels=args.labels)
+        #gh_repo.create_issue(title=args.title, body=msg, labels=args.labels)
 
         print("Title: ", args.title)
         print("Msg: ", msg)
@@ -95,7 +96,9 @@ if args.comment == False:
         pulls_obj = json.loads(pulls_obj)
         urls = ""
         for pull in pulls_obj:
-            urls += "* " + str(pull["html_url"]) + "\n"
+            pull_obj = pull.get("pull_request")
+            if pull_obj != None:
+                urls += "* " + str(pull_obj.get("html_url")) + "\n"
         print("The following PRs have matching labels: \n", urls)
 
         issues = gh_repo.get_issues(labels=[str(label) for label in args.labels])
