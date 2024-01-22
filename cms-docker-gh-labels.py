@@ -46,8 +46,6 @@ gh = Github(login_or_token=open(expanduser(repo_config.GH_TOKEN)).read().strip()
 gh_repo = gh.get_repo(args.repo)
 print("Authentication succeeeded to " + str(gh_repo.full_name))
 
-existingargs.labels
-
 label_str = "+label:".join([""] + [str(label) for label in args.labels])
 
 issues_curl = (
