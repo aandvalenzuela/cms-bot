@@ -5,7 +5,7 @@ from os.path import expanduser, abspath, dirname, join, exists
 import sys, re, json, glob
 from argparse import ArgumentParser
 from _py2with3compatibility import run_cmd
-from github_utils import add_issue_labels, create_issue_comment, get_issue_labels, remove_issue_label
+from github_utils import add_issue_labels, remove_issue_label
 
 SCRIPT_DIR = dirname(abspath(sys.argv[0]))
 
