@@ -72,8 +72,8 @@ else:
     if args.delete != "":
         print("Deleting label...")
         print(args.delete)
-        # remove_issue_label(gh_repo.full_name, issue_number, args.delete)
+        remove_issue_label(gh_repo.full_name, issue_number, args.delete)
 
     print("Adding label...")
     print(args.add)
-    # add_issue_labels(gh_repo.full_name, issue_number, args.add)
+    add_issue_labels(gh_repo.full_name, issue_number, args.add)
