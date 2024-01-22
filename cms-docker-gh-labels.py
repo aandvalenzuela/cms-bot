@@ -5,7 +5,7 @@ from os.path import expanduser, abspath, dirname, join, exists
 import sys, re, json, glob
 from argparse import ArgumentParser
 from _py2with3compatibility import run_cmd
-from github_utils import add_issue_labels, create_issue_comment, get_issue_labels
+from github_utils import add_issue_labels, create_issue_comment, get_issue_labels, remove_issue_label
 
 SCRIPT_DIR = dirname(abspath(sys.argv[0]))
 
@@ -66,10 +66,14 @@ assert issues_dict["total_count"] <= 1
 if issues_dict["total_count"] == 0:
     print("No matching issues found, skipping...")
 else:
-    if args.delete == True:
-        print("Deleting label...")
     issue_number = issues_dict["items"][0]["number"]
     print(gh_repo.full_name)
     print(issue_number)
+    if args.delete != "":
+        print("Deleting label...")
+        print(args.delete)
+        # remove_issue_label(gh_repo.full_name, issue_number, args.delete)
+
+    print("Adding label...")
     print(args.add)
     # add_issue_labels(gh_repo.full_name, issue_number, args.add)
