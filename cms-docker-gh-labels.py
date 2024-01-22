@@ -26,10 +26,10 @@ parser.add_argument(
     default="",
 )
 parser.add_argument(
-    "-a", "--add-label", dest="add", help="Labels to add", default="",
+    "-a", "--add-label", dest="add", help="Labels to add", type=str, default="",
 )
 parser.add_argument(
-    "-d", "--delete-label", dest="delete", help="Delete existing label", default=False,
+    "-d", "--delete-label", dest="delete", help="Delete existing label", type=str, default="",
 )
 
 args = parser.parse_args()
