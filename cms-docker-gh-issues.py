@@ -138,13 +138,8 @@ if args.comment == False:
                     sys.exit(0)
 
             add_issue_labels(gh_repo.full_name, issue_number, ["building"])
-            labels = []
-            for file in glob.glob("cmssw_*.txt"):
-                label = file.replace("cmssw_", "").replace(".txt", "-building")
-                print("New label: ", label)
-                labels.append(label)
-            print("Setting labels: ", labels)
-            #add_issue_labels(gh_repo.full_name, issue_number, labels)
+            with open('gh-info', 'w') as f:
+                f.write(issue_number)
             # Don't delete property files
             sys.exit(1)
 
