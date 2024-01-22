@@ -2,7 +2,7 @@
 from __future__ import print_function
 from github import Github
 from os.path import expanduser, abspath, dirname, join, exists
-import sys, re, json
+import sys, re, json, glob
 from argparse import ArgumentParser
 from _py2with3compatibility import run_cmd
 from github_utils import add_issue_labels, create_issue_comment, get_issue_labels
@@ -138,6 +138,13 @@ if args.comment == False:
                     sys.exit(0)
 
             add_issue_labels(gh_repo.full_name, issue_number, ["building"])
+            labels = []
+            for file in glob.glob("cmssw_*.txt"):
+                label = file.replace("cmssw_", "").replace(".txt", "-building")
+                print("New label: ", label)
+                labels.append(label)
+            print("Setting labels: ", labels)
+            #add_issue_labels(gh_repo.full_name, issue_number, labels)
             # Don't delete property files
             sys.exit(1)
 
