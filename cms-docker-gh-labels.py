@@ -76,4 +76,4 @@ else:
 
     print("Adding label...")
     print(args.add)
-    add_issue_labels(gh_repo.full_name, issue_number, args.add)
+    add_issue_labels(gh_repo.full_name, issue_number, [str(args.add)])
