@@ -3,6 +3,7 @@ from __future__ import print_function
 from github import Github
 from os.path import expanduser, abspath, dirname, join, exists
 import sys, re, json, glob
+import urllib
 from argparse import ArgumentParser
 from _py2with3compatibility import run_cmd
 from github_utils import add_issue_labels, create_issue_comment, get_issue_labels
