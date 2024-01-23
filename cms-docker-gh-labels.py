@@ -75,7 +75,7 @@ else:
         #try:
         remove_issue_label(gh_repo.full_name, issue_number, [str(args.delete)])
         #except:
-            print("Label not present")
+        #    print("Label not present")
 
     print("Adding label...")
     print(args.add)
