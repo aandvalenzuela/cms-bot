@@ -137,7 +137,7 @@ if args.comment == False:
                     print("Build already triggered... Nothing to do!")
                     sys.exit(0)
 
-            add_issue_labels(gh_repo.full_name, issue_number, ["building"])
+            #add_issue_labels(gh_repo.full_name, issue_number, ["building"])
             with open('gh-info', 'w') as f:
                 f.write(issue_number)
             # Don't delete property files
