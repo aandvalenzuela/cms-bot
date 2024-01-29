@@ -139,9 +139,9 @@ if args.comment == False:
 
             #add_issue_labels(gh_repo.full_name, issue_number, ["building"])
             with open('gh-info', 'w') as f:
-                f.write(issue_number)
+                f.write(str(issue_number))
             # Don't delete property files
-            sys.exit(1)
+            sys.exit(0)
 
     # Delete property files
     sys.exit(0)
