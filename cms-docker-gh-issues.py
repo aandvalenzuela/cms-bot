@@ -136,7 +136,7 @@ if args.comment == False:
                 if "building" in label_obj["name"] or "queued" in label_obj["name"]:
                     print("Build already triggered... Nothing to do!")
                     with open('gh-info.tmp', 'a') as f:
-                        f.write(str(label_obj["name"]))
+                        f.write(str(label_obj["name"]) + "\n")
             sys.exit(0)
 
             #with open('gh-info', 'w') as f:
