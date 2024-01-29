@@ -137,7 +137,7 @@ if args.comment == False:
                     print("Build already triggered... Nothing to do!")
                     with open('gh-info', 'w') as f:
                         f.write(str(label_obj["name"]))
-                    sys.exit(0)
+            sys.exit(0)
 
             #with open('gh-info', 'w') as f:
             #    f.write(str(issue_number))
