@@ -133,13 +133,14 @@ if args.comment == False:
             existing_labels = get_issue_labels(gh_repo.full_name, issue_number)
             print(existing_labels)
             for label_obj in existing_labels:
-                if label_obj["name"] == "building":
+                if "building" in label_obj["name"] or "queued" in label_obj["name"]:
                     print("Build already triggered... Nothing to do!")
+                    with open('gh-info', 'w') as f:
+                        f.write(str(label_obj["name"]))
                     sys.exit(0)
 
-            #add_issue_labels(gh_repo.full_name, issue_number, ["building"])
-            with open('gh-info', 'w') as f:
-                f.write(str(issue_number))
+            #with open('gh-info', 'w') as f:
+            #    f.write(str(issue_number))
             # Don't delete property files
             sys.exit(0)
 
