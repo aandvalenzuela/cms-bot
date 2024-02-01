@@ -83,6 +83,7 @@ if args.comment == False:
     #issues = gh_repo.get_issues(labels=[str(label) for label in args.labels])
 
     #for issue in gh_repo.get_issues(labels=[str(label) for label in args.labels]):
+    print(gh_repo.get_issues(labels=["new"]))
     for issue in gh_repo.get_issues(labels=["new"]):
         print("Existing issues:", str(issue))
 
