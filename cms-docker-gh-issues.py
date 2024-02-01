@@ -97,8 +97,6 @@ if args.comment == False:
     for issue in gh_repo.get_issues(state="closed", labels=[str(label) for label in args.labels]):
         print("[CLOSED] Existing issues:", str(issue))
         issue_number = issue.number
-
-    sys.exit(0)
     
     # We should have only one matching issue
     # assert issues_dict["total_count"] <= 1
@@ -157,6 +155,9 @@ if args.comment == False:
         # Process "building" label
         existing_labels = get_issue_labels(gh_repo.full_name, issue_number)
         print(existing_labels)
+
+        sys.exit(0) # EARLY EXIT
+        
         for label_obj in existing_labels:
             if "building" in label_obj["name"] or "queued" in label_obj["name"]:
                 print("Build already triggered... Nothing to do!")
@@ -168,20 +169,17 @@ if args.comment == False:
     # Delete property files
     sys.exit(0)
 else:
-    print("Checking existing Issue", issues_curl)
-    exit_code, issues_obj = run_cmd(issues_curl)
-    print(issues_obj)
+    #print("Checking existing Issue", issues_curl)
+    #exit_code, issues_obj = run_cmd(issues_curl)
+    #print(issues_obj)
 
-    issues_dict = json.loads(issues_obj)
-    print("Existing Issues: " + str(issues_dict["total_count"]))
+    #issues_dict = json.loads(issues_obj)
+    #print("Existing Issues: " + str(issues_dict["total_count"]))
 
     # We should have only one matching issue
-    assert issues_dict["total_count"] <= 1
+    #assert issues_dict["total_count"] <= 1
 
-    if issues_dict["total_count"] == 0:
-        print("No matching issues found, skipping...")
-    else:
+    for issue in gh_repo.get_issues(labels=[str(label) for label in args.labels]):
         print("Adding issue comment...")
-        issue_title = issues_dict["items"][0]["title"]
-        issue_number = issues_dict["items"][0]["number"]
+        issue_number = issue.number
         create_issue_comment(gh_repo.full_name, issue_number, msg)
