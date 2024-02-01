@@ -87,6 +87,8 @@ if args.comment == False:
         print("Creating issue request")
         issue_obj = gh_repo.create_issue(title=args.title, body=msg, labels=args.labels)
         print("Issue response: ", str(issue_obj))
+        issue_number = issue_obj.number
+        print("New issue number:", issue_number)
 
         print("Title: ", args.title)
         print("Msg: ", msg)
@@ -102,14 +104,14 @@ if args.comment == False:
                 urls += "* " + str(pull_obj.get("html_url")) + "\n"
         print("The following PRs have matching labels: \n", urls)
 
-        issues = gh_repo.get_issues(labels=[str(label) for label in args.labels])
+        #issues = gh_repo.get_issues(labels=[str(label) for label in args.labels])
         
-        for issue in issues:
-            print("-->", issue)
-            print(issue.title)
-            print(args.title)
-            print(issue.number)
-            issue_number = issue.number
+        #for issue in issues:
+            #print("-->", issue)
+            #print(issue.title)
+            #print(args.title)
+            #print(issue.number)
+            #issue_number = issue.number
         
         print("Finished processing issues!")
 
