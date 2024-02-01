@@ -100,6 +100,7 @@ if args.comment == False:
         # Process "building" or "queued" labels
         existing_labels = get_issue_labels(gh_repo.full_name, issue_number)
         print("Existing labels:", existing_labels)
+        sys.exit(0)
         for label_obj in existing_labels:
             if "building" in label_obj["name"] or "queued" in label_obj["name"]:
                 print("Build already triggered... Nothing to do!")
