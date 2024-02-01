@@ -80,9 +80,10 @@ if args.comment == False:
     #issues_dict = json.loads(issues_obj)
     #print("Existing Issues: " + str(issues_dict["total_count"]))
 
-    issues = gh_repo.get_issues(labels=[str(label) for label in args.labels])
+    #issues = gh_repo.get_issues(labels=[str(label) for label in args.labels])
 
-    print("Existing issues:", str(issues))
+    for issue in gh_repo.get_issues(labels=[str(label) for label in args.labels]):
+        print("Existing issues:", str(issue))
 
     #for issue in repo.get_issues(state="open", sort="updated", labels=label):
     #pr = issue.pull_request
