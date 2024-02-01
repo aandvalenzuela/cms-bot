@@ -85,7 +85,8 @@ if args.comment == False:
 
     if issues_dict["total_count"] == 0:
         print("Creating issue request")
-        gh_repo.create_issue(title=args.title, body=msg, labels=args.labels)
+        issue_obj = gh_repo.create_issue(title=args.title, body=msg, labels=args.labels)
+        print("Issue response: ", str(issue_obj))
 
         print("Title: ", args.title)
         print("Msg: ", msg)
