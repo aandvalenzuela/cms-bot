@@ -82,22 +82,28 @@ if args.comment == False:
 
     #issues = gh_repo.get_issues(labels=[str(label) for label in args.labels])
 
-    #for issue in gh_repo.get_issues(labels=[str(label) for label in args.labels]):
-    print(gh_repo.get_issues(labels=["new"]))
-    for issue in gh_repo.get_issues(labels=["new"]):
-        print("Existing issues:", str(issue))
+    for issue in gh_repo.get_issues(state="open", labels=[str(label) for label in args.labels]):
+        print("[OPEN] Existing issues:", str(issue))
+        # Delete property files
+        sys.exit(0)
+        
 
     #for issue in repo.get_issues(state="open", sort="updated", labels=label):
     #pr = issue.pull_request
     #if not pr:
     #    continue
 
+    issue_number = None
+    for issue in gh_repo.get_issues(state="closed", labels=[str(label) for label in args.labels]):
+        print("[CLOSED] Existing issues:", str(issue))
+        issue_number = issue.number
+
     sys.exit(0)
     
     # We should have only one matching issue
-    assert issues_dict["total_count"] <= 1
+    # assert issues_dict["total_count"] <= 1
 
-    if issues_dict["total_count"] == 0:
+    if issue_number == None:
         print("Creating issue request")
         issue_obj = gh_repo.create_issue(title=args.title, body=msg, labels=args.labels)
         print("Issue response: ", str(issue_obj))
@@ -138,22 +144,24 @@ if args.comment == False:
             create_issue_comment(gh_repo.full_name, issue_number, issue_comment)
     else:
         # Check state of the issue: open/closed...
-        issue_title = issues_dict["items"][0]["title"]
-        issue_number = issues_dict["items"][0]["number"]
+        #issue_title = issues_dict["items"][0]["title"]
+        #issue_title = issue.title
+        #issue_number = issues_dict["items"][0]["number"]
+        #issue_number = issue.number
 
-        state = issues_dict["items"][0]["state"]
-        if state == "open":
-            print("Issue is already open... Nothing to do!")
-        elif state == "closed":
-            print("Ready for building!")
-            # Process "building" label
-            existing_labels = get_issue_labels(gh_repo.full_name, issue_number)
-            print(existing_labels)
-            for label_obj in existing_labels:
-                if "building" in label_obj["name"] or "queued" in label_obj["name"]:
-                    print("Build already triggered... Nothing to do!")
-                    with open('gh-info.tmp', 'a') as f:
-                        f.write(str(label_obj["name"]) + "\n")
+        #state = issues_dict["items"][0]["state"]
+        #if state == "open":
+        #    print("Issue is already open... Nothing to do!")
+        #elif state == "closed":
+        print("Ready for building!")
+        # Process "building" label
+        existing_labels = get_issue_labels(gh_repo.full_name, issue_number)
+        print(existing_labels)
+        for label_obj in existing_labels:
+            if "building" in label_obj["name"] or "queued" in label_obj["name"]:
+                print("Build already triggered... Nothing to do!")
+                with open('gh-info.tmp', 'a') as f:
+                    f.write(str(label_obj["name"]) + "\n")
             # Don't delete property files
             sys.exit(1)
 
