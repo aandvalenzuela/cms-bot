@@ -75,11 +75,22 @@ if args.comment == False:
         args.labels[0],
     )
 
-    print("Checking existing Issue", issues_curl)
-    exit_code, issues_obj = run_cmd(issues_curl)
-    issues_dict = json.loads(issues_obj)
-    print("Existing Issues: " + str(issues_dict["total_count"]))
+    #print("Checking existing Issue", issues_curl)
+    #exit_code, issues_obj = run_cmd(issues_curl)
+    #issues_dict = json.loads(issues_obj)
+    #print("Existing Issues: " + str(issues_dict["total_count"]))
 
+    issues = gh_repo.get_issues(labels=[str(label) for label in args.labels])
+
+    print("Existing issues:", str(issues))
+
+    #for issue in repo.get_issues(state="open", sort="updated", labels=label):
+    #pr = issue.pull_request
+    #if not pr:
+    #    continue
+
+    sys.exit(0)
+    
     # We should have only one matching issue
     assert issues_dict["total_count"] <= 1
 
