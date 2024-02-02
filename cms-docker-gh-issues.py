@@ -113,7 +113,7 @@ if args.comment == False:
     print("Exit 0")
     sys.exit(0)
 else:
-    for issue in gh_repo.get_issues(labels=[str(label) for label in args.labels]):
+    for issue in gh_repo.get_issues(labels=[str(label) for label in args.labels], state="closed"):
         issue_number = issue.number
 
     print("Adding issue comment...")
