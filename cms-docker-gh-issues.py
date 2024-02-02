@@ -100,16 +100,17 @@ if args.comment == False:
         # Process "building" or "queued" labels
         existing_labels = get_issue_labels(gh_repo.full_name, issue_number)
         print("Existing labels:", existing_labels)
-        sys.exit(0)
         for label_obj in existing_labels:
             if "building" in label_obj["name"] or "queued" in label_obj["name"]:
                 print("Build already triggered... Nothing to do!")
                 with open("gh-info.tmp", "a") as f:
                     f.write(str(label_obj["name"]) + "\n")
         # Don't delete property files
+        print("Exit 1")
         sys.exit(1)
 
     # Delete property files
+    print("Exit 0")
     sys.exit(0)
 else:
     for issue in gh_repo.get_issues(labels=[str(label) for label in args.labels]):
