@@ -99,6 +99,7 @@ def es_parse_log(logFile):
     step = pathInfo[11].split("_")[0]
     week, rel_sec = cmsswIB2Week(release)
     index = "ib-matrix-" + week
+    monthly_index = "ib-relval-" + str(int(week) - int(week)%4)
     document = "runTheMatrix-data"
     id = sha1((release + architecture + workflow + str(step)).encode()).hexdigest()
     logdir = "/".join(logFile.split("/")[:-1])
@@ -189,7 +190,10 @@ def es_parse_log(logFile):
     except Exception as e:
         print(e)
     try:
+        print("=> ", str(payload))
         send_payload(index, document, id, json.dumps(payload))
+        payload["week"] = week
+        send_payload(monthly_index, document, id, json.dumps(payload))
     except:
         pass
     if datasets:
