@@ -41,11 +41,12 @@ function run_check {
 	# Check if node is already in the blacklist
 	if [ ! -e $blacklist_path/$node ]; then 
             touch "$blacklist_path/$node" || exit 1
+	    echo "$error" > "$blacklist_path/$node"
 	    if [[ $(echo $node | grep '^olarm\|^ibmminsky' | wc -l) -gt 0 ]]; then
                 # If aarch or ppc, bring node off
                 aarch_ppc_disconnect $node
 		# If aarch (olarm), scp dummy file to /afs cmsbuild area
-		echo "$error" > "$blacklist_path/$node"
+		#echo "$error" > "$blacklist_path/$node"
 		scp "$blacklist_path/$node" cmsbuild@lxplus.cern.ch:/afs/cern.ch/user/c/cmsbuild/nodes-info/"$node"
             elif [[ $(echo $node | grep '^lxplus' | wc -l) -gt 0 ]]; then
                 # If lxplus, disconnect all nodes connected to this host
