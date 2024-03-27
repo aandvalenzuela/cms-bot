@@ -19,3 +19,5 @@ if [ "$SINGULARITY" == "true" ]; then
     echo "Checking that singularity can start a container on $(hostname)"
     /cvmfs/cms.cern.ch/common/cmssw-${arch} --command-to-run ls >/dev/null 2>&1 && echo -e "... OK!" || echo "ERROR in singularity!"
 fi
+
+exit 0
