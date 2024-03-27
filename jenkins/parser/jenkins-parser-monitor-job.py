@@ -221,10 +221,10 @@ with open(
     html_file.write(tail)
 
     for node in os.listdir("/var/lib/jenkins/workspace/cache/blacklist/"):
+        file_path = "/var/lib/jenkins/workspace/cache/blacklist/" + node
+        with open(file_path, 'r') as file:
+            reason = file.read()
         if ".offline" in node:
-            file_path = "/var/lib/jenkins/workspace/cache/blacklist/" + node
-            with open(file_path, 'r') as file:
-                reason = file.read()
             node = node.split(".offline")[0]
             print("Node " + node + " is blacklisted")
             print(reason)
@@ -242,11 +242,13 @@ with open(
         elif ".cern.ch" in node:
             node = node.split(".cern.ch")[0]
             print("Lxplus host " + node + " is blacklisted")
+            print(reason)
             html_file.writelines(
                 '      <tr class="Retry">\n        <td>'
                 + node
-                + "</td>\n        <td>Lxplus host is blacklisted, no Jenkins node will connect to it </td>\n"
-                + "<td> - </td>      </tr>\n"
+                + "</td>\n        <td>Lxplus host is blacklisted, no Jenkins node will connect to it </td>\n<td>"
+                + reason
+                + "</td>      </tr>\n"
             )
 
     tail = "      </table>\n\
