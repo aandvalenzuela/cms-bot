@@ -214,6 +214,7 @@ with open(
          <tr class="header">\n\
             <th>Blacklisted Node</th>\n\
             <th>Node Url</th>\n\
+            <th>Reason</th>\n\
          </tr>\n\
          </thead>\n\
       <tbody>\n'
@@ -222,6 +223,7 @@ with open(
     for node in os.listdir("/var/lib/jenkins/workspace/cache/blacklist/"):
         if ".offline" in node:
             node = node.split(".offline")[0]
+            reason = $(cat /var/lib/jenkins/workspace/cache/blacklist/$node)
             print("Node " + node + " is blacklisted")
             html_file.writelines(
                 '      <tr class="NoAction">\n        <td>'
@@ -230,6 +232,9 @@ with open(
                 + node
                 + '">https://cmssdt.cern.ch/jenkins/computer/'
                 + node
+                + "</td><td>"
+                + reason
+                + "</td>"
             )
         elif ".cern.ch" in node:
             node = node.split(".cern.ch")[0]
@@ -238,6 +243,7 @@ with open(
                 '      <tr class="Retry">\n        <td>'
                 + node
                 + "</td>\n        <td>Lxplus host is blacklisted, no Jenkins node will connect to it </td>\n      </tr>\n"
+                + "<td> - </td>"
             )
 
     tail = "      </table>\n\
