@@ -21,8 +21,8 @@ function run_check {
     node=$1
     SSH_OPTS="-q -o IdentitiesOnly=yes -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o ServerAliveInterval=60"
     scp $SSH_OPTS ${WORKSPACE}/cms-bot/jenkins/nodes-sanity-check.sh "cmsbuild@$node:/tmp" || (echo "Cannot scp script" && exit 1)
-    ssh $SSH_OPTS "cmsbuild@"$node "sh /tmp/nodes-sanity-check.sh $SINGULARITY $PATHS" >> $WORKSPACE/logfile
-    cat $WORKSPACE/logfile
+    ssh $SSH_OPTS "cmsbuild@"$node "sh /tmp/nodes-sanity-check.sh $SINGULARITY $PATHS" >> $WORKSPACE/logfile-$node
+    cat $WORKSPACE/logfile-$node
     error=$(cat $WORKSPACE/logfile | grep "... ERROR")
     error_count=$(cat $WORKSPACE/logfile | grep "... ERROR" | wc -l)
     if [[ ${error_count} -eq 0 ]]; then
@@ -37,6 +37,7 @@ function run_check {
         fi
     else
         echo "$error! Blacklisting ${node} ..."
+	rm $WORKSPACE/logfile-$node
 	# Check if node is already in the blacklist
 	if [ ! -e $blacklist_path/$node ]; then 
             touch "$blacklist_path/$node" || exit 1
