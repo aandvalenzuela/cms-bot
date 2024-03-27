@@ -5,7 +5,7 @@ PATHS=$@
 # Checking that paths are acessible
 for path in ${PATHS[@]}; do
     echo "Checking ${path} for host $(hostname)"
-    ls ${path} >/dev/null 2>&1 && echo -e "... OK!" || echo -e ${path} && exit 1
+    ls ${path} >/dev/null 2>&1 && echo -e "... OK!" || (echo -e ${path} && exit 1)
 done
 
 arch=$(uname -r | grep -o "el[0-9]")
