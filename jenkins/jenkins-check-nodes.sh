@@ -25,8 +25,10 @@ function run_check {
     echo "Done"
     cat $WORKSPACE/logfile
     echo "Exit"
-    exit 1
-    if [[ ${exit_code} -eq 0 ]]; then
+    error=$(cat $WORKSPACE/logfile | grep "ERROR in")
+    echo "[FAIL]: $error"
+    error_count=$(cat $WORKSPACE/logfile | grep "ERROR in" | wc -l)
+    if [[ ${error_count} -eq 0 ]]; then
         rm -f "$blacklist_path/$node"
         # Special .offline cleanup for aarch and ppc nodes
         if [[ $(echo $node | grep -e 'olarm\|ibmminsky' | wc -l) -gt 0 ]]; then
