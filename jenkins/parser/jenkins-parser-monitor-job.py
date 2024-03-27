@@ -223,7 +223,7 @@ with open(
     for node in os.listdir("/var/lib/jenkins/workspace/cache/blacklist/"):
         if ".offline" in node:
             node = node.split(".offline")[0]
-            reason = $(cat /var/lib/jenkins/workspace/cache/blacklist/$node)
+            reason = os.system("cat /var/lib/jenkins/workspace/cache/blacklist/$node")
             print("Node " + node + " is blacklisted")
             html_file.writelines(
                 '      <tr class="NoAction">\n        <td>'
