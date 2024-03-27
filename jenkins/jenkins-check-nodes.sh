@@ -23,9 +23,8 @@ function run_check {
     scp $SSH_OPTS ${WORKSPACE}/cms-bot/jenkins/nodes-sanity-check.sh "cmsbuild@$node:/tmp" || (echo "Cannot scp script" && exit 1)
     ssh $SSH_OPTS "cmsbuild@"$node "sh /tmp/nodes-sanity-check.sh $SINGULARITY $PATHS" >> $WORKSPACE/logfile
     cat $WORKSPACE/logfile
-    error=$(cat $WORKSPACE/logfile | grep "ERROR in")
-    echo "[FAIL]: $error"
-    error_count=$(cat $WORKSPACE/logfile | grep "ERROR in" | wc -l)
+    error=$(cat $WORKSPACE/logfile | grep "... ERROR")
+    error_count=$(cat $WORKSPACE/logfile | grep "... ERROR" | wc -l)
     if [[ ${error_count} -eq 0 ]]; then
         rm -f "$blacklist_path/$node"
         # Special .offline cleanup for aarch and ppc nodes
@@ -37,7 +36,7 @@ function run_check {
             aarch_ppc_cleanup $node
         fi
     else
-        echo "... ERROR! Blacklisting ${node} ..."
+        echo "$error! Blacklisting ${node} ..."
 	# Check if node is already in the blacklist
 	if [ ! -e $blacklist_path/$node ]; then 
             touch "$blacklist_path/$node" || exit 1
