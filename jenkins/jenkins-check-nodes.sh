@@ -126,7 +126,7 @@ function node_off {
     ${JENKINS_CLI_CMD} offline-node ${affected_node} -m "Node\ ${affected_node}\ has\ been\ blacklisted"
     # Store that node has been set offline
     echo "Storing .offline info at: $blacklist_path"
-    touch "$blacklist_path/$affected_node.offline"
+    echo "$error" > "$blacklist_path/$affected_node.offline"
 }
 
 function node_on {
