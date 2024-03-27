@@ -222,10 +222,10 @@ with open(
 
     for node in os.listdir("/var/lib/jenkins/workspace/cache/blacklist/"):
         if ".offline" in node:
-            command = "cat /var/lib/jenkins/workspace/cache/blacklist/" + node
+            file_path = "/var/lib/jenkins/workspace/cache/blacklist/" + node
+            with open(file_path, 'r') as file:
+                reason = file.read()
             node = node.split(".offline")[0]
-            print(command)
-            reason = os.system(command)
             print("Node " + node + " is blacklisted")
             print(reason)
             html_file.writelines(
