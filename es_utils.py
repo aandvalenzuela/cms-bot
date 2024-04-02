@@ -180,6 +180,7 @@ def get_payload_wscroll(index, query, max_count=-1):
         scroll_size = es_data["hits"]["total"]
     else:
         scroll_size = es_data["hits"]["total"]["value"]
+    print("Show data: ", str(es_data))
     scroll_id = es_data.pop("_scroll_id")
     tcount = 0
     while (scroll_size > 0) and ((max_count < 0) or (tcount < max_count)):
