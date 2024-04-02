@@ -181,7 +181,10 @@ def get_payload_wscroll(index, query, max_count=-1):
     else:
         scroll_size = es_data["hits"]["total"]["value"]
     print("Show data: ", str(es_data))
-    scroll_id = es_data.pop("_scroll_id")
+    try:
+        scroll_id = es_data.pop("_scroll_id")
+    except:
+        return es_data
     tcount = 0
     while (scroll_size > 0) and ((max_count < 0) or (tcount < max_count)):
         query = '{"scroll_id": "%s","scroll":"1m"}' % scroll_id
