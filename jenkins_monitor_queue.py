@@ -89,7 +89,7 @@ if content_hash:
 
 print("=== GET PAYLOAD ===")
 content_hash = get_payload("cmssdt-jenkins-offline-node*", query_offline_nodes)
-
+print("--> " + str(content_hash))
 print("=== PROCESSING ===")
 es_offline_nodes = []
 if content_hash:
