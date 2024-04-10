@@ -4,7 +4,7 @@ import datetime, json
 import sys
 import os
 from hashlib import sha1
-from es_utils import get_payload, send_payload, delete_hit
+from es_utils import get_payload, get_payload_wscroll, send_payload, delete_hit
 
 JENKINS_PREFIX = "jenkins"
 try:
