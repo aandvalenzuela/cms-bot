@@ -4,7 +4,7 @@ import datetime, json
 import sys
 import os
 from hashlib import sha1
-from es_utils import get_payload_wscroll, send_payload, delete_hit
+from es_utils import get_payload, send_payload, delete_hit
 
 JENKINS_PREFIX = "jenkins"
 try:
@@ -86,7 +86,7 @@ if content_hash:
 
                 send_payload(queue_index, queue_document, id, json.dumps(payload))
 
-content_hash = get_payload_wscroll("cmssdt-jenkins-offline-node*", query_offline_nodes)
+content_hash = get_payload("cmssdt-jenkins-offline-node*", query_offline_nodes)
 
 es_offline_nodes = []
 if content_hash:
