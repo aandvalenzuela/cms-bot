@@ -88,7 +88,7 @@ if content_hash:
                 send_payload(queue_index, queue_document, id, json.dumps(payload))
 
 print("=== GET PAYLOAD ===")
-content_hash = get_payload_wscroll("cmssdt-jenkins-offline-node*", query_offline_nodes)
+content_hash = get_payload("cmssdt-jenkins-offline-node*", query_offline_nodes)
 
 print("=== PROCESSING ===")
 es_offline_nodes = []
