@@ -84,10 +84,13 @@ if content_hash:
                 current_time = datetime.datetime.utcnow() - datetime.datetime(1970, 1, 1)
                 payload["@timestamp"] = round(current_time.total_seconds() * 1000)
 
+                print("=== SEND PAYLOAD ===")
                 send_payload(queue_index, queue_document, id, json.dumps(payload))
 
+print("=== GET PAYLOAD ===")
 content_hash = get_payload("cmssdt-jenkins-offline-node*", query_offline_nodes)
 
+print("=== PROCESSING ===")
 es_offline_nodes = []
 if content_hash:
     if (not "hits" in content_hash) or (not "hits" in content_hash["hits"]):
