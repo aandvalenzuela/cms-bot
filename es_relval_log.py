@@ -99,7 +99,7 @@ def es_parse_log(logFile):
     step = pathInfo[11].split("_")[0]
     week, rel_sec = cmsswIB2Week(release)
     index = "ib-matrix-" + week
-    monthly_index = "ib-relval-matrix-" + str(int(week) - int(week)%4)
+    matrix_monthly_index = "ib-relval-matrix-" + str(int(week) - int(week)%4)
     document = "runTheMatrix-data"
     id = sha1((release + architecture + workflow + str(step)).encode()).hexdigest()
     logdir = "/".join(logFile.split("/")[:-1])
@@ -190,9 +190,9 @@ def es_parse_log(logFile):
     except Exception as e:
         print(e)
     try:
-        print("=> ", str(payload))
         send_payload(index, document, id, json.dumps(payload))
-        send_payload(monthly_index, document, id, json.dumps(payload))
+        # Send payload to monthly index "ib-relval-matrix-* too"
+        send_payload(matrix_monthly_index, document, id, json.dumps(payload))
     except:
         pass
     if datasets:
@@ -213,7 +213,8 @@ def es_parse_log(logFile):
             idx = sha1((id + ds).encode()).hexdigest()
             send_payload("ib-dataset-" + week, "relvals-dataset", idx, json.dumps(dataset))
             # Send payload to monthly index "ib-relval-datset-* too"
-            send_payload("ib-relval-dataset-" + week, "relvals-dataset", idx, json.dumps(dataset))
+            dataset_monthly_index = "ib-relval-dataset-" + str(int(week) - int(week)%4)
+            send_payload(dataset_monthly_index, "relvals-dataset", idx, json.dumps(dataset))
 
 
 if __name__ == "__main__":
