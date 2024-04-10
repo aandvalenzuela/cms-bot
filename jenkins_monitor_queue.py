@@ -31,7 +31,7 @@ query_offline_nodes = (
 )
 
 
-queue_index = "cmssdt-jenkins-offline-nodes"
+queue_index = "jenkins-offline-nodes"
 queue_document = "offline-data"
 
 max_time = 60
@@ -105,7 +105,7 @@ for node in es_offline_nodes:
     if node not in current_offline_nodes:
         unique_id = JENKINS_PREFIX + "-" + node
         id = sha1(unique_id.encode("utf-8")).hexdigest()
-        hit = {"_index": "cmssdt-jenkins-offline-nodes", "_id": id}
+        hit = {"_index": queue_index, "_id": id}
 
         print("--> Deleting entry for node " + str(node) + ":" + str(hit))
         delete_hit(hit)
