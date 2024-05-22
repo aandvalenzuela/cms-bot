@@ -19,7 +19,7 @@ echo "=========="
 cat node.xml | ${JENKINS_CLI_CMD} create-node ${NODE_NAME}
 
 echo "Starting Node: ${NODE_NAME}"
-echo ${JENKINS_CLI_CMD}
+echo "JENKINS_CLI_CMD: ${JENKINS_CLI_CMD}"
 #if ! ${JENKINS_CLI_CMD} connect-node ${NODE_NAME} ; then
 #  sleep 60
 #  ${JENKINS_CLI_CMD} connect-node ${NODE_NAME}
