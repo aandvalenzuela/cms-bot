@@ -41,7 +41,7 @@ echo "SINGULARITY_PROMPT: $SINGULARITY_PROMPT"
 echo "SINGULARITY_CACHEDIR: $SINGULARITY_CACHEDIR"
 
 echo "#!/bin/bash -ex" > ${script_name}.sh
-echo "while true; do sleep 100; done" >> ${script_name}.sh
+echo "while true; do sleep 100; done &" >> ${script_name}.sh
 chmod +x ${script_name}.sh
 
 echo "$(pwd)"
