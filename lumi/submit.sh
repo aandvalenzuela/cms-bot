@@ -20,7 +20,7 @@ ls $SINGULARITY_TMPDIR
 
 echo "#########################################"
 
-script_name="$(pwd)/dummy"
+script_name="$HOME/dummy"
 
 REQUEST_TIME="20:00:00"
 REQUEST_PARTITION="small-g"
@@ -47,5 +47,6 @@ chmod +x ${script_name}.sh
 echo "$(pwd)"
 echo "${script_name}.sh"
 
-srun --time=$REQUEST_TIME --partition=$REQUEST_PARTITION --hint=multithread --nodes=$REQUEST_NODE --ntasks=$REQUEST_TASKS --cpus-per-task=$REQUEST_CPU --gpus=$REQUEST_GPU --mem=$REQUEST_MEMORY -- /project/$SLURM_ACCOUNT/cvmfsexec/singcvmfs exec --bind /opt,/project/$SLURM_ACCOUNT,/scratch/$SLURM_ACCOUNT --bind $SINGULARITY_SCRATCH:/workspace:image-src=/ --env PS1="$SINGULARITY_PROMPT" $SINGULARITY_CACHEDIR/cmssw_el8.sif ${script_name}.sh
-echo "Slot allocated!"
+cd $HOME
+
+srun --time=$REQUEST_TIME --partition=$REQUEST_PARTITION --hint=multithread --nodes=$REQUEST_NODE --ntasks=$REQUEST_TASKS --cpus-per-task=$REQUEST_CPU --gpus=$REQUEST_GPU --mem=$REQUEST_MEMORY -- /project/$SLURM_ACCOUNT/cvmfsexec/singcvmfs exec --bind /opt,/project/$SLURM_ACCOUNT,/scratch/$SLURM_ACCOUNT --bind $SINGULARITY_SCRATCH:/workspace:image-src=/ --env PS1="$SINGULARITY_PROMPT" $SINGULARITY_CACHEDIR/cmssw_el8.sif ${script_name}.sh && echo "Slot allocated!"
