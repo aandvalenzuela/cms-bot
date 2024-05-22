@@ -41,10 +41,11 @@ echo "SINGULARITY_PROMPT: $SINGULARITY_PROMPT"
 echo "SINGULARITY_CACHEDIR: $SINGULARITY_CACHEDIR"
 
 echo "#!/bin/bash -ex" > ${script_name}.sh
-echo "while true; do sleep 100; done" > ${script_name}.sh
+echo "while true; do sleep 100; done" >> ${script_name}.sh
 chmod +x ${script_name}.sh
 
 echo "$(pwd)"
+echo "${script_name}.sh"
 
 srun --time=$REQUEST_TIME --partition=$REQUEST_PARTITION --hint=multithread --nodes=$REQUEST_NODE --ntasks=$REQUEST_TASKS --cpus-per-task=$REQUEST_CPU --gpus=$REQUEST_GPU --mem=$REQUEST_MEMORY -- /project/$SLURM_ACCOUNT/cvmfsexec/singcvmfs exec --bind /opt,/project/$SLURM_ACCOUNT,/scratch/$SLURM_ACCOUNT --bind $SINGULARITY_SCRATCH:/workspace:image-src=/ --env PS1="$SINGULARITY_PROMPT" $SINGULARITY_CACHEDIR/cmssw_el8.sif ${script_name}.sh
 echo "Slot allocated!"
