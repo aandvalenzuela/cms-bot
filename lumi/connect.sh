@@ -8,7 +8,8 @@ NODE_NAME="lumi${LUMI_JOB_ID}"
 WORK_DIR="/users/andbocci"
 CMS_BOT_DIR="/build/workspace/cache/cms-bot"
 
-cp ${CMS_BOT_DIR}/lumi/node.xml node.xml
+cp $WORKSPACE/cms-bot/lumi/node.xml node.xml || exit 1
+
 sed -i -e "s|@WORK_DIR@|$WORK_DIR|g;s|@CMS_BOT_DIR@|$CMS_BOT_DIR|" node.xml
 sed -i -e "s|@LABELS@|$LABELS lumiid-${LUMI_JOB_ID}|g;s|@NODE_NAME@|$NODE_NAME|g" node.xml
 sed -i -e "s|@LUMI_USER@|$LUMI_USER|g;s|@LUMI_SUMBITTER_SYSTEM@|$LUMI_SUMBITTER_SYSTEM|g" node.xml
