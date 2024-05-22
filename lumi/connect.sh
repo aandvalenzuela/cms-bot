@@ -1,5 +1,5 @@
 LUMI_USER="andbocci"
-LUMI_SUMBITTER_SYSTEM="lxplus7.cern.ch"
+LUMI_SUMBITTER_SYSTEM="lumi.csc.fi 'sattach 7186516.0'"
 SSH_OPTS="-q -o IdentitiesOnly=yes -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o ServerAliveInterval=60"
 #LUMI_JOB_ID=$(squeue --user=andbocci --format %A | tail -1)
 LUMI_JOB_ID="7186516.0"
