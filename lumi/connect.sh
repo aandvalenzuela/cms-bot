@@ -16,7 +16,7 @@ sed -i -e "s|@LUMI_USER@|$LUMI_USER|g;s|@LUMI_SUMBITTER_SYSTEM@|$LUMI_SUMBITTER_
 echo "node definition"
 cat node.xml
 echo "=========="
-cat node.xml | ${JENKINS_CLI_CMD} create-node ${NODE_NAME}
+#cat node.xml | ${JENKINS_CLI_CMD} create-node ${NODE_NAME}
 
 echo "Starting Node: ${NODE_NAME}"
 echo "JENKINS_CLI_CMD: ${JENKINS_CLI_CMD}"
