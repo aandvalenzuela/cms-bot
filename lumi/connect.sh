@@ -12,15 +12,14 @@ cp $WORKSPACE/cms-bot/lumi/node.xml node.xml || exit 1
 
 sed -i -e "s|@WORK_DIR@|$WORK_DIR|g;s|@CMS_BOT_DIR@|$CMS_BOT_DIR|" node.xml
 sed -i -e "s|@LABELS@|$LABELS lumiid-${LUMI_JOB_ID}|g;s|@NODE_NAME@|$NODE_NAME|g" node.xml
-sed -i -e "s|@LUMI_USER@|$LUMI_USER|g;s|@LUMI_SUMBITTER_SYSTEM@|$LUMI_SUMBITTER_SYSTEM|g" node.xml
+#sed -i -e "s|@LUMI_USER@|$LUMI_USER|g;s|@LUMI_SUMBITTER_SYSTEM@|$LUMI_SUMBITTER_SYSTEM|g" node.xml
 
 echo "node definition"
 cat node.xml
 echo "=========="
-#cat node.xml | ${JENKINS_CLI_CMD} create-node ${NODE_NAME}
+cat node.xml | ${JENKINS_CLI_CMD} create-node ${NODE_NAME}
 
 echo "Starting Node: ${NODE_NAME}"
-echo "JENKINS_CLI_CMD: ${JENKINS_CLI_CMD}"
 #if ! ${JENKINS_CLI_CMD} connect-node ${NODE_NAME} ; then
 #  sleep 60
 #  ${JENKINS_CLI_CMD} connect-node ${NODE_NAME}
