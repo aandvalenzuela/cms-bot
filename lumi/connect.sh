@@ -1,8 +1,9 @@
 LUMI_USER="andbocci"
-LUMI_SUMBITTER_SYSTEM="lumi.csc.fi 'sattach 7186516.0'"
+LUMI_ATTACH="'sattach $LUMI_JOB_ID.0'"
+LUMI_SUMBITTER_SYSTEM="lumi.csc.fi $LUMI_ATTACH"
 SSH_OPTS="-q -o IdentitiesOnly=yes -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o ServerAliveInterval=60"
 #LUMI_JOB_ID=$(squeue --user=andbocci --format %A | tail -1)
-LUMI_JOB_ID="7186516.0"
+#LUMI_JOB_ID="7186516.0"
 NODE_NAME="lumi${LUMI_JOB_ID}"
 
 WORK_DIR="/users/andbocci"
