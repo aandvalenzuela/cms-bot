@@ -1,0 +1,16 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<slave>
+  <name>@NODE_NAME@</name>
+  <description></description>
+  <remoteFS>@WORK_DIR@</remoteFS>
+  <numExecutors>1</numExecutors>
+  <mode>NORMAL</mode>
+  <retentionStrategy class="hudson.slaves.RetentionStrategy$Demand">
+    <inDemandDelay>0</inDemandDelay>
+    <idleDelay>3</idleDelay>
+  </retentionStrategy>
+  <launcher class="hudson.slaves.CommandLauncher" plugin="command-launcher@1.2">
+    <agentCommand>@CMS_BOT_DIR@/condor/jenkins/connect.sh @LUMI_USER@@@LUMI_SUMBITTER_SYSTEM@</agentCommand>
+  </launcher>
+  <label>@LABELS@</label>
+</slave>
