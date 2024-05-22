@@ -17,7 +17,7 @@ sed -i -e "s|@LABELS@|$LABELS lumiid-${LUMI_JOB_ID}|g;s|@NODE_NAME@|$NODE_NAME|g
 echo "node definition"
 cat node.xml
 echo "=========="
-#cat node.xml | ${JENKINS_CLI_CMD} create-node ${NODE_NAME}
+cat node.xml | ${JENKINS_CLI_CMD} create-node ${NODE_NAME}
 
 echo "Starting Node: ${NODE_NAME}"
 if ! ${JENKINS_CLI_CMD} connect-node ${NODE_NAME} ; then
