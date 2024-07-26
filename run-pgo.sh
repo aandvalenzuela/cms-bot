@@ -17,7 +17,7 @@ function create_local_installation()
     export SCRAM_ARCH=el8_amd64_gcc12
     sh -x bootstrap.sh setup -path $(pwd) -arch $SCRAM_ARCH >& $(pwd)/bootstrap_$SCRAM_ARCH.log
     common/cmspkg -a $SCRAM_ARCH update
-    common/cmspkg -a $SCRAM_ARCH install -y -r cms.week0 cms+cmssw+${IB}
+    common/cmspkg -a $SCRAM_ARCH install -y -r cms.week1 cms+cmssw+${IB}
     source cmsset_default.sh
     scram list CMSSW
     cd $PGO_GEN_DIR
