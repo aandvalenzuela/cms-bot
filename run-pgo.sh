@@ -57,7 +57,7 @@ pushd ${PGO_GEN_DIR}
     export CMSSW_CPU_TYPE=""
     mkdir $CMSSW_PGO_DIRECTORY
     scram b generate-pgo
-    scram b -v -j 10
+    scram b -v -j 10 >/dev/null 2>&1
     cmsenv
     #Run the test to generate the profile in $CMSSW_BASE/PGO directory
     #PGO are generated under $CMSSW_PGO_DIRECTORY directory
