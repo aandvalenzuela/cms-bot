@@ -61,7 +61,8 @@ pushd ${PGO_GEN_DIR}
     cmsenv
     #Run the test to generate the profile in $CMSSW_BASE/PGO directory
     #PGO are generated under $CMSSW_PGO_DIRECTORY directory
-    cmsRun $CMSRUN_CMD
+    mv $CMSRUN_CMD .
+    cmsRun "${WF}-step1-*.py"
     find $CMSSW_PGO_DIRECTORY -name '*' -type f
   popd
 popd
@@ -81,8 +82,9 @@ pushd ${PGO_USE_DIR}
     cmsenv
     #Run N times to the re-built executable
     mkdir ${PGO_BASE}/${WF}
-    for x in 0 1 2 ; do
-      /usr/bin/time --verbose cmsRun $CMSRUN_CMD >> ${PGO_BASE}/${WF}-pgo.out 2>&1
+    mv $CMSRUN_CMD .
+    for x in 0 1; do
+      /usr/bin/time --verbose cmsRun "${WF}-step1-*.py" >> ${PGO_BASE}/${WF}-pgo.out 2>&1
     done
   popd
 popd
@@ -94,8 +96,9 @@ pushd default
   pushd $IB
     scram b -v -j 10 >/dev/null 2>&1
     cmsenv
-    for x in 0 1 2 ; do
-      /usr/bin/time --verbose cmsRun $CMSRUN_CMD >> ${PGO_BASE}/${WF}-wo-pgo.out 2>&1
+    mv $CMSRUN_CMD .
+    for x in 0 1; do
+      /usr/bin/time --verbose cmsRun "${WF}-step1-*.py" >> ${PGO_BASE}/${WF}-wo-pgo.out 2>&1
     done
   popd
 popd
