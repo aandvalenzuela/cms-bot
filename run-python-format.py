@@ -15,7 +15,7 @@ def main():
 
     # Check if the file exists
     if not os.path.isfile(fileName):
-        print(f"Error: {fileName} does not exist.")
+        print(f"Error: file does not exist.")
         return
 
     # Read the list of files from the file
