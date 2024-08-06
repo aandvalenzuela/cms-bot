@@ -23,7 +23,7 @@ def main():
         files_list = [os.path.join(basePath, line.strip()) for line in file.readlines()]
 
     try:
-        subprocess.run(['python', 'PFA.py'] + files_list, check=True)
+        subprocess.run(['python', '../cms-bot/PFA.py'] + files_list, check=True)
     except subprocess.CalledProcessError as e:
         print("An error occurred while running PFA.py:" + e)
 
