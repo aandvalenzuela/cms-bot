@@ -15,7 +15,7 @@ def main():
 
     # Check if the file exists
     if not os.path.isfile(fileName):
-        print(f"Error: file does not exist.")
+        print("Error:" + fileName + "does not exist.")
         return
 
     # Read the list of files from the file
@@ -25,7 +25,9 @@ def main():
     try:
         subprocess.run(['python', 'PFA.py'] + files_list, check=True)
     except subprocess.CalledProcessError as e:
-        print(f"An error occurred while running PFA.py: {e}")
+        print("An error occurred while running PFA.py:" + e)
+
+
 
 if __name__ == "__main__":
     main()

@@ -25,7 +25,7 @@ def lint_files(python_files):
             for file in python_files:
                 if os.path.basename(file) == "PFA.py":
                     continue
-                receipt_file.write(f"\nLinting subject: {file}")
+                receipt_file.write("\nLinting subject: " +  file)
                 linting_result = subprocess.run(
                     ["ruff", "check", "--diff", find_file_path(file)],
                     stdout=subprocess.PIPE,
@@ -33,7 +33,7 @@ def lint_files(python_files):
                     text=True,
                 )
                 receipt_file.write(linting_result.stdout)
-                print(f"File --> {file} linting successful.")
+                print("File --> " + file + " linting successful.")
                 if linting_result.stderr:
                     receipt_file.write("\nErrors: ")
                     receipt_file.write(linting_result.stderr)
@@ -46,7 +46,7 @@ def format_files(python_files):
             for file in python_files: #PFA
                 if os.path.basename(file) == "PFA.py":
                     continue
-                receipt_file.write(f"\nFormatting subject: {file}")
+                receipt_file.write("\nFormatting subject: " + file)
                 formatting_result = subprocess.run(
                     ["ruff", "format", "--diff", find_file_path(file)],
                     stdout=subprocess.PIPE,
@@ -54,7 +54,7 @@ def format_files(python_files):
                     text=True,
                 )
                 receipt_file.write(formatting_result.stdout)
-                print(f"File --> {file} formatting successful.")
+                print("File --> " + file + " formatting successful.")
                 if formatting_result.stderr:
                     receipt_file.write("\nErrors: ")
                     receipt_file.write(formatting_result.stderr)
@@ -67,7 +67,7 @@ def CodeQualityChecks(python_files):
             # Find the full path of the file
             file_path = find_file_path(file)
             if not file_path:
-                print(f"File {file} not found.")
+                print("File" + file + "not found.")
                 continue
 
             # Formatting the code
@@ -116,7 +116,7 @@ def main():
         elif os.path.isfile(path):
             all_python_files.append(path)
         else:
-            print(f"Error: {path} is not a valid file or directory.")
+            print("Error:" + path + "is not a valid file or directory.")
             return
     CodeQualityChecks(all_python_files)
 
