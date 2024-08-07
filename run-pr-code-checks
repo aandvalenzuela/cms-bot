@@ -111,7 +111,7 @@ if $CODE_CHECKS ; then
     scram build -k -j $NUM_PROC code-checks USER_CODE_CHECKS_FILE="${UP_DIR}/code-checks-files.txt" > ${UP_DIR}/code-checks.log 2>&1 || ERR=true
     # run python checks
     echo "*** HERE: $(pwd) ***"
-    ls ../ || true
+    python3 --version
     python3 ../cms-bot/run-python-format.py --inputfile "${UP_DIR}/code-checks-files.txt" --cmsswbase "src" --outputfile "${UP_DIR}/python-checks.txt"
     cat "${UP_DIR}/python-checks.txt"
     #python3 ../cms-bot/run-python-format.py --file "${UP_DIR}/code-checks-files.txt"
