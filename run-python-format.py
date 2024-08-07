@@ -1,33 +1,66 @@
 import os
 import subprocess
 import argparse
-'''
-This script should accept a -f option that specifies the path to a file containing a list of file paths to process.
-Run: python run-python-format.py -f/--file code-checks-files.txt
-'''
+
 def main():
     parser = argparse.ArgumentParser(description="Run Python formatting and linting.")
-    parser.add_argument('-f', '--file', help="Path to the file containing the list of files to process.", required=True) # Will not run without argument
+
+    # Define the arguments
+    parser.add_argument(
+        "--inputfile",
+        required=True,
+        help="Path to the file containing the list of files to process.",
+    )
+    parser.add_argument(
+        "--cmsswbase",
+        required=True,
+        help="Path to the CMSSW base directory.",
+    )
+    parser.add_argument(
+        "--outputfile",
+        required=True,
+        help="Path to the output file.",
+    )
+
+    # Parse the arguments
     args = parser.parse_args()
 
-    fileName = args.file
-    basePath = "/home/bkristinsson/cmssw"
+    input_file = args.inputfile
+    cmssw_base = args.cmsswbase
+    output_file = args.outputfile
 
-    # Check if the file exists
-    if not os.path.isfile(fileName):
-        print("Error:" + fileName + "does not exist.")
+    # Check if the input file exists
+    if not os.path.isfile(input_file):
+        print("Error: " + input_file + " does not exist.")
         return
 
-    # Read the list of files from the file
-    with open(fileName, 'r') as file:
-        files_list = [os.path.join(basePath, line.strip()) for line in file.readlines()]
-
+    # Read the list of files from the input file
     try:
-        subprocess.run(['python', '../cms-bot/PFA.py'] + files_list, check=True)
+        with open(input_file, "r") as file:
+            files_list = [os.path.join(cmssw_base, line.strip()) for line in file.readlines()]
+    except IOError as e:
+        print("Error reading " + input_file + ": " + str(e))
+        return
+
+    # Ensure the directory for the output file exists
+    output_dir = os.path.dirname(output_file)
+    if output_dir and not os.path.exists(output_dir):
+        try:
+            os.makedirs(output_dir)
+        except OSError as e:
+            print("Error creating directory " + output_dir + ": " + str(e))
+            return
+
+    # Run the external script and redirect output to the specified output file
+    try:
+        subprocess.run(
+            ["python", "../cms-bot/PFA.py"] + files_list + ["--outputfile", output_file],
+            check=True,
+        )
+        print("Successfully processed files. Output saved to " + output_file + ".")
     except subprocess.CalledProcessError as e:
-        print("An error occurred while running PFA.py:" + e)
-
-
+        print("An error occurred while running PFA.py: " + str(e))
 
 if __name__ == "__main__":
     main()
+    

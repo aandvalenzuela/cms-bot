@@ -1,0 +1,2 @@
+FWCore/Framework/python/test/cmsExceptionsFatalOption_cff.py
+FWCore/Framework/python/test/cmsExceptionsFatal_cff.py

@@ -2,6 +2,7 @@ import os
 import subprocess
 import argparse
 
+
 # Function to get the absolute path of a file
 def find_file_path(file):
     return os.path.realpath(file)
@@ -18,86 +19,47 @@ def find_python_files(directory):
     return py_files
 
 
-# Function to lint Python files and write results to a receipt file
-def lint_files(python_files):
+# Code quality checker
+def CodeQualityChecks(python_files, output_file):
     if python_files:
-        with open("Linting_receipt.txt", "w") as receipt_file:
+        with open(output_file, "w") as out_file:
             for file in python_files:
-                if os.path.basename(file) == "PFA.py":
+                # Find the full path of the file
+                file_path = find_file_path(file)
+                if not file_path:
+                    print("File " + file + " not found.")
                     continue
-                receipt_file.write("\nLinting subject: " +  file)
-                linting_result = subprocess.run(
-                    ["ruff", "check", "--diff", find_file_path(file)],
+
+                # Formatting the code
+                codeFormat = subprocess.run(
+                    ["ruff", "format", file_path],
                     stdout=subprocess.PIPE,
                     stderr=subprocess.PIPE,
                     text=True,
                 )
-                receipt_file.write(linting_result.stdout)
-                print("File --> " + file + " linting successful.")
-                if linting_result.stderr:
-                    receipt_file.write("\nErrors: ")
-                    receipt_file.write(linting_result.stderr)
-
-
-# Function to format Python files and write results to a receipt file
-def format_files(python_files):
-    if python_files:
-        with open("Formatting_receipt.txt", "w") as receipt_file:
-            for file in python_files: #PFA
-                if os.path.basename(file) == "PFA.py":
-                    continue
-                receipt_file.write("\nFormatting subject: " + file)
-                formatting_result = subprocess.run(
-                    ["ruff", "format", "--diff", find_file_path(file)],
+                # Linting the code
+                codelinting = subprocess.run(
+                    ["ruff", "check", "--fix", file_path],
                     stdout=subprocess.PIPE,
                     stderr=subprocess.PIPE,
                     text=True,
                 )
-                receipt_file.write(formatting_result.stdout)
-                print("File --> " + file + " formatting successful.")
-                if formatting_result.stderr:
-                    receipt_file.write("\nErrors: ")
-                    receipt_file.write(formatting_result.stderr)
+                # git diff of quality checked code online and offline
+                command = "pushd /home/bkristinsson/cmssw && git diff && popd"
+                gitdiff_Receipt = subprocess.run(
+                    command,
+                    shell=True,
+                    check=True,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                    text=True,
+                )
 
+                # Write results to the output file
+                out_file.write("Changes for file: " + file_path + "\n")
+                out_file.write(gitdiff_Receipt.stdout)
+                out_file.write("\n")
 
-#Code quality checker
-def CodeQualityChecks(python_files):
-    if python_files:
-        for file in python_files:
-            # Find the full path of the file
-            file_path = find_file_path(file)
-            if not file_path:
-                print("File" + file + "not found.")
-                continue
-
-            # Formatting the code
-            codeFormat = subprocess.run(
-                ["ruff", "format", find_file_path(file)],
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                text=True,
-            )
-            # Linting the code
-            codelinting = subprocess.run(
-                ["ruff", "check", "--fix", find_file_path(file)],
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                text=True,
-            )
-            # git diff of quality checked code online and offline
-            command = "pushd /home/bkristinsson/cmssw && git diff && popd" # Should change the hardcoded dir ->/home/bkristinsson/cmssw
-            gitdiff_Receipt = subprocess.run(
-                [command, find_file_path(file)],
-                shell=True,
-                check=True,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                text=True,
-            )
-
-            with open("CQC_receipt.txt", "w") as diff_file:
-                diff_file.write(gitdiff_Receipt.stdout)
-                diff_file.write("\n")
 
 # Main function to parse arguments and call other functions
 def main():
@@ -106,6 +68,12 @@ def main():
     )
     parser.add_argument(
         "paths", nargs="+", help="List of directories or file paths to process"
+    )
+    # for the outputfile given
+    parser.add_argument(
+        "--outputfile",
+        required=True,
+        help="Path to the output file.",
     )
     args = parser.parse_args()
 
@@ -116,9 +84,11 @@ def main():
         elif os.path.isfile(path):
             all_python_files.append(path)
         else:
-            print("Error:" + path + "is not a valid file or directory.")
+            print("Error: " + path + " is not a valid file or directory.")
             return
-    CodeQualityChecks(all_python_files)
+
+    CodeQualityChecks(all_python_files, args.outputfile)
+
 
 # Entry point of the script !always at the end.
 if __name__ == "__main__":

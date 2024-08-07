@@ -1,0 +1,14 @@
+~/cmssw ~/cms-bot
+diff --git a/FWCore/Framework/python/test/cmsExceptionsFatal_cff.py b/FWCore/Framework/python/test/cmsExceptionsFatal_cff.py
+index bb24a02020c..6be187332b0 100644
+--- a/FWCore/Framework/python/test/cmsExceptionsFatal_cff.py
++++ b/FWCore/Framework/python/test/cmsExceptionsFatal_cff.py
+@@ -3,5 +3,5 @@ import FWCore.ParameterSet.Config as cms
+ import FWCore.Framework.test.cmsExceptionsFatalOption_cff
+ 
+ options = cms.untracked.PSet(
+-  Rethrow = FWCore.Framework.test.cmsExceptionsFatalOption_cff.Rethrow
++    Rethrow=FWCore.Framework.test.cmsExceptionsFatalOption_cff.Rethrow
+ )
+~/cms-bot
+
