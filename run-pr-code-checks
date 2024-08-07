@@ -112,7 +112,7 @@ if $CODE_CHECKS ; then
     # run python checks
     echo "*** HERE: $(pwd) ***"
     ls ../ || true
-    python3 ../cms-bot/run-python-format.py --inputfile "${UP_DIR}/code-checks-files.txt" --cmsswbase "src" --ouputfile "${UP_DIR}/python-checks.txt"
+    python3 ../cms-bot/run-python-format.py --inputfile "${UP_DIR}/code-checks-files.txt" --cmsswbase "src" --outputfile "${UP_DIR}/python-checks.txt"
     cat "${UP_DIR}/python-checks.txt"
     #python3 ../cms-bot/run-python-format.py --file "${UP_DIR}/code-checks-files.txt"
     if $ERR ; then
