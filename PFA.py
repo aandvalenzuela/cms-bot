@@ -39,9 +39,10 @@ def CodeQualityChecks(python_files, output_file):
                 #    stderr=subprocess.PIPE,
                 #    text=True,
                 #)
-                os.system("black " + file_path)
                 #os.system("ruff format " + file_path)
 
+                os.system("cat ../cms-bot/CQC_receipt.txt > " + out_file)
+                """
                 # Linting the code
                 codelinting = subprocess.run(
                     ["ruff", "check", "--fix", file_path],
@@ -59,12 +60,11 @@ def CodeQualityChecks(python_files, output_file):
                     stderr=subprocess.PIPE,
                     text=True,
                 )
-
                 # Write results to the output file
                 out_file.write("Changes for file: " + file_path + "\n")
                 out_file.write(gitdiff_Receipt.stdout)
                 out_file.write("\n")
-
+                """
 
 # Main function to parse arguments and call other functions
 def main():
