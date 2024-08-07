@@ -39,7 +39,8 @@ def CodeQualityChecks(python_files, output_file):
                 #    stderr=subprocess.PIPE,
                 #    text=True,
                 #)
-                os.system("ruff format " + file_path)
+                os.system("black " + file_path)
+                #os.system("ruff format " + file_path)
 
                 # Linting the code
                 codelinting = subprocess.run(
