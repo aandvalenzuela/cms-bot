@@ -33,12 +33,14 @@ def CodeQualityChecks(python_files, output_file):
                     continue
 
                 # Formatting the code
-                codeFormat = subprocess.run(
-                    ["ruff", "format", file_path],
-                    stdout=subprocess.PIPE,
-                    stderr=subprocess.PIPE,
-                    text=True,
-                )
+                #codeFormat = subprocess.run(
+                #    ["ruff", "format", file_path],
+                #    stdout=subprocess.PIPE,
+                #    stderr=subprocess.PIPE,
+                #    text=True,
+                #)
+                os.system("ruff format " + file_path)
+
                 # Linting the code
                 codelinting = subprocess.run(
                     ["ruff", "check", "--fix", file_path],
