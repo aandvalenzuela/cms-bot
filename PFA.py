@@ -41,7 +41,7 @@ def CodeQualityChecks(python_files, output_file):
                 #)
                 #os.system("ruff format " + file_path)
 
-                os.system("cat ../cms-bot/CQC_receipt.txt > " + out_file)
+                os.system("cat ../cms-bot/CQC_receipt.txt > " + output_file)
                 """
                 # Linting the code
                 codelinting = subprocess.run(
