@@ -58,6 +58,7 @@ def extract_and_upload(directory):
 
     files = glob.glob(directory)
     for package_file in files:
+        print("--> Processing file: ", package_file)
         packages = extract_packages(package_file)
 
         release_cycle, flavor, date = parse_folder_name(package_file.split("/")[6])
