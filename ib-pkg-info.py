@@ -97,7 +97,7 @@ def extract_and_upload(directory):
         index = "cmssw-ib-pkgs"
         document = "cmssw-ib-pkgs"
         # Upload one entry per IB
-        send_payload(index, document, id, json.dumps(payload))
+        #send_payload(index, document, id, json.dumps(payload))
 
     return result
 
