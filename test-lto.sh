@@ -33,7 +33,7 @@ function create_development_area()
     cmsenv
     git cms-addpkg '*'
     cd ..
-    if [[ "X$O2" == "XTrue" ]]; then
+    if [[ "X$O2" == "Xtrue" ]]; then
 	echo "*** USING -O2 OPTIMIZATION ***"
         find config/toolbox/el8_amd64_gcc12/tools/selected/ -type f -name 'gcc-*.xml' -exec sed -i 's/O3/O2/g' {} \;
         for tool in $(find . -type f -name 'gcc-*.xml' | rev | cut -d "/" -f1 | rev | cut -d "." -f1); do
@@ -70,7 +70,7 @@ for x in 0 1 2; do
       echo "[DBG] Modifying number of events to a 100"
       sed -i "s/(10)/(100)/g" $files
       if [[ "X$LOCAL_DATA" == "XTrue" ]]; then
-        sed -i "s/\/store/file:store/g" $file
+        sed -i "s/\/store/file:store/g" $files
       fi
     fi
     file_name=$(echo $files | cut -d "." -f1)
