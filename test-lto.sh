@@ -18,11 +18,11 @@ function create_local_installation()
     export SCRAM_ARCH=el8_amd64_gcc12
     sh -x bootstrap.sh setup -path $(pwd) -arch $SCRAM_ARCH >& $(pwd)/bootstrap_$SCRAM_ARCH.log
     common/cmspkg -a $SCRAM_ARCH update
-    common/cmspkg -a $SCRAM_ARCH install -y -r cms.week1 cms+cmssw+${IB}
-    source cmsset_default.sh
-    scram list CMSSW
-    cd ..
+    common/cmspkg -a $SCRAM_ARCH install -y -r cms.${REPO_WEEK} cms+cmssw+${IB}
   fi
+  source cmsset_default.sh
+  scram list CMSSW
+  cd ..
 }
 
 function create_development_area()
@@ -39,6 +39,7 @@ function create_development_area()
         for tool in $(find . -type f -name 'gcc-*.xml' | rev | cut -d "/" -f1 | rev | cut -d "." -f1); do
 	    scram setup $tool
 	done
+	find config/toolbox/el8_amd64_gcc12/tools/selected/ -type f -name 'cuda.xml' -exec sed -i 's/O3/O2/g' {} \; && scram setup cuda
     else
         echo "*** USING -O3 OPTIMIZATION ***"
     fi
@@ -46,6 +47,7 @@ function create_development_area()
 }
 
 echo "*** INSTALLING RELEASE LOCALLY ***"
+REPO_WEEK=$(python3 get_ib_week.py ${IB})
 create_local_installation
 echo "*** CREATING DEVELOPMENT AREA ***"
 create_development_area
