@@ -55,14 +55,26 @@ echo "*** BUILDING CMSSW ***"
 cmsenv
 scram build -j 16
 echo "*** RUNNING WF TO DUMP CONFIG FILES ***"
-mkdir relvals && cd relvals
+mkdir relvals && mkdir data && cd data
 runTheMatrix.py -l $WF -t 4 --ibeos
-cp -r ${WF}*/*.py .
+cp -r ${WF}*/*.py ../relvals
+cd ${WF}*
 
 if [[ "X$LOCAL_DATA" == "XTrue" ]]; then
   echo "COPYING DATA"
-  scp -r cmsbuild@lxplus:/afs/cern.ch/work/c/cmsbuild/store .
+  filename="step2*.log"
+
+  for file in $(grep "Successfully opened file" $filename | grep -o 'root://[^ ]*'); do
+    echo "--> ${file}"
+    local_path=$(echo ${file} | sed 's/.*\(store\/.*\)/\1/')
+    mkdir -p $(dirname ${local_path})
+    xrdcopy ${file} ${local_path} || true
+  done
+  #scp -r cmsbuild@lxplus:/afs/cern.ch/work/c/cmsbuild/store .
+  mv store ../../relvals
 fi
+
+cd ../../relvals
 
 echo "*** RUNNING WF STEPS ***"
 for x in 0 1 2; do
