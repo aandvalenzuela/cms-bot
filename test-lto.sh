@@ -47,7 +47,7 @@ function create_development_area()
 }
 
 echo "*** INSTALLING RELEASE LOCALLY ***"
-REPO_WEEK=$(python3 get_ib_week.py ${IB})
+REPO_WEEK=$(python3 cms-bot/get_ib_week.py ${IB})
 create_local_installation
 echo "*** CREATING DEVELOPMENT AREA ***"
 create_development_area
