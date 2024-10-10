@@ -19,10 +19,10 @@ function create_local_installation()
     sh -x bootstrap.sh setup -path $(pwd) -arch $SCRAM_ARCH >& $(pwd)/bootstrap_$SCRAM_ARCH.log
     common/cmspkg -a $SCRAM_ARCH update
     common/cmspkg -a $SCRAM_ARCH install -y -r cms.${REPO_WEEK} cms+cmssw+${IB}
+    cd ..
   fi
-  source cmsset_default.sh
+  source cmssw/cmsset_default.sh
   scram list CMSSW
-  cd ..
 }
 
 function create_development_area()
@@ -43,6 +43,7 @@ function create_development_area()
     else
         echo "*** USING -O3 OPTIMIZATION ***"
     fi
+  cd ..
   fi
 }
 
@@ -52,7 +53,7 @@ create_local_installation
 echo "*** CREATING DEVELOPMENT AREA ***"
 create_development_area
 echo "*** BUILDING CMSSW ***"
-cmsenv
+cd ${IB} && cmsenv
 scram build -j 16
 echo "*** RUNNING WF TO DUMP CONFIG FILES ***"
 mkdir relvals && mkdir data && cd data
@@ -72,7 +73,7 @@ if [[ "X$LOCAL_DATA" == "XTrue" ]]; then
     done
   done
   # Parse config files to get the data
-  for configfiles in $(ls *.log); do
+  for configfiles in $(ls *.py); do
     datafiles=$(grep "process.mix.input.fileNames" $configfiles | cut -d "[" -f2 | cut -d "]" -f1 | tr -d "'")
     xrootdprefix="root://eoscms.cern.ch//eos/cms/store/user/cmsbuild/"
     for file in ${datafiles//,/ }; do
@@ -80,7 +81,7 @@ if [[ "X$LOCAL_DATA" == "XTrue" ]]; then
       local_path=$(echo ${file} | sed 's/.*\(store\/.*\)/\1/')
       mkdir -p $(dirname ${local_path})
       xrootdfile=$(echo $file | cut -d : -f2)
-      echo "xrdcopy ${xrootdprefix}${xrootdfile} ${local_path} || true"
+      xrdcopy ${xrootdprefix}${xrootdfile} ${local_path} || true
     done
   done
   mv store ../../relvals
@@ -89,7 +90,7 @@ fi
 cd ../../relvals
 
 echo "*** RUNNING WF STEPS ***"
-for x in 0 1 2; do
+for x in 1 2 3 4 5; do
   echo "--------- NEW RUN ------------"
   for files in $(ls *.py); do
     if [ ${x} -eq 0 ]; then
