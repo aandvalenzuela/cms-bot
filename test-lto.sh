@@ -62,15 +62,27 @@ cd ${WF}*
 
 if [[ "X$LOCAL_DATA" == "XTrue" ]]; then
   echo "COPYING DATA"
-  filename="step2*.log"
-
-  for file in $(grep "Successfully opened file" $filename | grep -o 'root://[^ ]*'); do
-    echo "--> ${file}"
-    local_path=$(echo ${file} | sed 's/.*\(store\/.*\)/\1/')
-    mkdir -p $(dirname ${local_path})
-    xrdcopy ${file} ${local_path} || true
+  # Parse logs to get the data
+  for logfiles in $(ls *.log); do
+    for file in $(grep "Successfully opened file" $logfiles | grep -o 'root://[^ ]*'); do
+      echo "--> ${file}"
+      local_path=$(echo ${file} | sed 's/.*\(store\/.*\)/\1/')
+      mkdir -p $(dirname ${local_path})
+      xrdcopy ${file} ${local_path} || true
+    done
   done
-  #scp -r cmsbuild@lxplus:/afs/cern.ch/work/c/cmsbuild/store .
+  # Parse config files to get the data
+  for configfiles in $(ls *.log); do
+    datafiles=$(grep "process.mix.input.fileNames" $configfiles | cut -d "[" -f2 | cut -d "]" -f1 | tr -d "'")
+    xrootdprefix="root://eoscms.cern.ch//eos/cms/store/user/cmsbuild/"
+    for file in ${datafiles//,/ }; do
+      echo "--> $file"
+      local_path=$(echo ${file} | sed 's/.*\(store\/.*\)/\1/')
+      mkdir -p $(dirname ${local_path})
+      xrootdfile=$(echo $file | cut -d : -f2)
+      echo "xrdcopy ${xrootdprefix}${xrootdfile} ${local_path} || true"
+    done
+  done
   mv store ../../relvals
 fi
 
