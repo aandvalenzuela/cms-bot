@@ -66,7 +66,7 @@ cd ${IB} && cmsenv
 scram build -j 16
 echo "*** RUNNING WF TO DUMP CONFIG FILES ***"
 mkdir relvals && mkdir data && cd data
-runTheMatrix.py -l $WF -t ${THREADS} --ibeos
+runTheMatrix.py -l $WF -t ${THREADS} --ibeos --job-reports  --command "  --customise Validation/Performance/TimeMemorySummary.customiseWithTimeMemorySummary"
 cp -r ${WF}*/*.py ../relvals
 cd ${WF}*
 
@@ -99,7 +99,7 @@ fi
 cd ../../relvals
 
 echo "*** RUNNING WF STEPS ***"
-for x in {1..${RUNS}}; do
+for x in 1 2 3 4 5; do
   echo "--------- NEW RUN ------------"
   for files in $(ls *.py); do
     if [ ${x} -eq 0 ]; then
