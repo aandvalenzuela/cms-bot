@@ -4,6 +4,9 @@ IB=$1
 WF=$2
 O2=$3
 LOCAL_DATA=$4
+RUNS=$5
+EVENTS=$6
+THREADS=$7
 
 function cmsenv()
 {
@@ -34,7 +37,8 @@ function create_development_area()
     git cms-addpkg '*'
     cd ..
     if [[ "X$O2" == "Xtrue" ]]; then
-	echo "*** USING -O2 OPTIMIZATION ***"
+        echo "*** USING -O2 OPTIMIZATION ***"
+        TYPE="${TYPE}-O2"
         find config/toolbox/el8_amd64_gcc12/tools/selected/ -type f -name 'gcc-*.xml' -exec sed -i 's/O3/O2/g' {} \;
         for tool in $(find . -type f -name 'gcc-*.xml' | rev | cut -d "/" -f1 | rev | cut -d "." -f1); do
 	    scram setup $tool
@@ -42,26 +46,31 @@ function create_development_area()
 	find config/toolbox/el8_amd64_gcc12/tools/selected/ -type f -name 'cuda.xml' -exec sed -i 's/O3/O2/g' {} \; && scram setup cuda
     else
         echo "*** USING -O3 OPTIMIZATION ***"
+        TYPE="${TYPE}-O3"
     fi
-  cd ..
+    cd ..
   fi
 }
 
 echo "*** INSTALLING RELEASE LOCALLY ***"
 REPO_WEEK=$(python3 cms-bot/get_ib_week.py ${IB})
+TYPE="LTO"
+if [[ "${IB}" == *"NONLTO"* ]]; then
+  TYPE="NONLTO"
+fi
 create_local_installation
 echo "*** CREATING DEVELOPMENT AREA ***"
 create_development_area
-echo "*** BUILDING CMSSW ***"
+echo "*** BUILDING CMSSW FOR ${TYPE}***"
 cd ${IB} && cmsenv
 scram build -j 16
 echo "*** RUNNING WF TO DUMP CONFIG FILES ***"
 mkdir relvals && mkdir data && cd data
-runTheMatrix.py -l $WF -t 4 --ibeos
+runTheMatrix.py -l $WF -t ${THREADS} --ibeos
 cp -r ${WF}*/*.py ../relvals
 cd ${WF}*
 
-if [[ "X$LOCAL_DATA" == "XTrue" ]]; then
+if [[ "X$LOCAL_DATA" == "Xtrue" ]]; then
   echo "COPYING DATA"
   # Parse logs to get the data
   for logfiles in $(ls *.log); do
@@ -90,20 +99,21 @@ fi
 cd ../../relvals
 
 echo "*** RUNNING WF STEPS ***"
-for x in 1 2 3 4 5; do
+for x in {1..${RUNS}}; do
   echo "--------- NEW RUN ------------"
   for files in $(ls *.py); do
     if [ ${x} -eq 0 ]; then
       echo "[DBG] Modifying number of events to a 100"
-      sed -i "s/(10)/(100)/g" $files
-      if [[ "X$LOCAL_DATA" == "XTrue" ]]; then
+      sed -i "s/(10)/(${EVENTS})/g" $files
+      if [[ "X$LOCAL_DATA" == "Xtrue" ]]; then
         sed -i "s/\/store/file:store/g" $files
       fi
     fi
     file_name=$(echo $files | cut -d "." -f1)
     echo "--> ${file_name}"
-    /usr/bin/time --verbose cmsRun --enablejobreport --jobreport "${WF}-${TYPE}-${file_name}-${x}.xml" $files >> "${WF}-${TYPE}-${file_name}.out" 2>&1
+    /usr/bin/time --verbose cmsRun --numThreads ${THREADS} $files >> "${WF}-${TYPE}-${file_name}.out" 2>&1
     cat "${WF}-${TYPE}-${file_name}.out" | grep "Elapsed "
+    cat "${WF}-${TYPE}-${file_name}.out" | grep "Event Throughput"
   done
   echo "------------------------------"
 done
