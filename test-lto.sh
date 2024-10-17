@@ -101,7 +101,9 @@ cd ../../relvals
 echo "*** RUNNING WF STEPS ***"
 for x in 1 2 3 4 5; do
   echo "--------- NEW RUN ------------"
+  step=0
   for files in $(ls *.py); do
+    step=step+1
     if [ ${x} -eq 0 ]; then
       echo "[DBG] Modifying number of events to a 100"
       sed -i "s/(10)/(${EVENTS})/g" $files
@@ -111,9 +113,18 @@ for x in 1 2 3 4 5; do
     fi
     file_name=$(echo $files | cut -d "." -f1)
     echo "--> ${file_name}"
-    /usr/bin/time --verbose cmsRun --numThreads ${THREADS} $files >> "${WF}-${TYPE}-${file_name}.out" 2>&1
-    cat "${WF}-${TYPE}-${file_name}.out" | grep "Elapsed "
-    cat "${WF}-${TYPE}-${file_name}.out" | grep "Event Throughput"
+    /usr/bin/time --verbose cmsRun --numThreads ${THREADS} $files >> "step${step}-${WF}-${TYPE}-${file_name}.logfile" 2>&1
+    #cat "${WF}-${TYPE}-${file_name}.out" | grep "Elapsed "
+    #cat "${WF}-${TYPE}-${file_name}.out" | grep "Event Throughput"
   done
   echo "------------------------------"
+done
+
+for files in $(ls *.logfile); do
+  cat ${files} | grep "Elapsed "
+  cat ${files} | grep "Event Throughput"
+  file_name=$(echo $files | cut -d "." -f1 | cut -d "-" -f1-3)
+  result=$(cat ${files} | grep "Event Throughput" | awk '{print $3}' | paste -sd,)
+  echo "--- EVENT THROUGHPUT SUMMARY ---"
+  echo "${file_name} = [$result]"
 done
