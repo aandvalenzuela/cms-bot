@@ -21,7 +21,8 @@ function create_local_installation()
     export SCRAM_ARCH=el8_amd64_gcc12
     sh -x bootstrap.sh setup -path $(pwd) -arch $SCRAM_ARCH >& $(pwd)/bootstrap_$SCRAM_ARCH.log
     common/cmspkg -a $SCRAM_ARCH update
-    common/cmspkg -a $SCRAM_ARCH install -y -r cms.${REPO_WEEK} cms+cmssw+${IB}
+    #common/cmspkg -a $SCRAM_ARCH install -y -r cms.${REPO_WEEK} cms+cmssw+${IB}
+    common/cmspkg -a $SCRAM_ARCH install -y -r cms.lto cms+cmssw+${IB}
     cd ..
   fi
   source cmssw/cmsset_default.sh
@@ -52,18 +53,39 @@ function create_development_area()
   fi
 }
 
+function create_development_area_for_release()
+{
+  if [ ! -d ${IB} ] ; then
+    scram p ${IB}
+    cd ${IB}/src
+    cmsenv
+    cd ..
+  fi
+}
+
 echo "*** INSTALLING RELEASE LOCALLY ***"
-REPO_WEEK=$(python3 cms-bot/get_ib_week.py ${IB})
+#REPO_WEEK=$(python3 cms-bot/get_ib_week.py ${IB})
+#TYPE="LTO"
+#if [[ "${IB}" == *"NONLTO"* ]]; then
+#  TYPE="NONLTO"
+#fi
+
 TYPE="LTO"
 if [[ "${IB}" == *"NONLTO"* ]]; then
   TYPE="NONLTO"
 fi
+if [[ "${IB}" == *"O2"* ]]; then
+  TYPE="${TYPE}-O2"
+else
+  TYPE="${TYPE}-O3"
+fi
+
 create_local_installation
 echo "*** CREATING DEVELOPMENT AREA ***"
-create_development_area
+create_development_area_for_release
 echo "*** BUILDING CMSSW FOR ${TYPE}***"
-cd ${IB} && cmsenv
-scram build -j 16
+#cd ${IB} && cmsenv
+#scram build -j 16
 echo "*** RUNNING WF TO DUMP CONFIG FILES ***"
 mkdir relvals && mkdir data && cd data
 runTheMatrix.py -l $WF -t ${THREADS} --ibeos --job-reports  --command "  --customise Validation/Performance/TimeMemorySummary.customiseWithTimeMemorySummary"
