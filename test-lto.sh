@@ -125,7 +125,7 @@ echo "--- EVENT THROUGHPUT SUMMARY ---"
 for files in $(ls *.logfile); do
   #cat ${files} | grep "Elapsed "
   #cat ${files} | grep "Event Throughput"
-  file_name=$(echo $files | cut -d "." -f1 | cut -d "-" -f1-3)
+  file_name=$(echo $files | cut -d "." -f1-2 | cut -d "-" -f1-3)
   result=$(cat ${files} | grep "Event Throughput" | awk '{print $3}' | paste -sd,)
   echo "${file_name} = [$result]"
 done
