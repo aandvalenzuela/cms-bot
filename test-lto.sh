@@ -127,7 +127,7 @@ for x in 1 2 3 4 5; do
   for files in $(ls *.py); do
     #step=step+1
     step=$((step+1))
-    if [ ${x} -eq 0 ]; then
+    if [ ${x} -eq 1 ]; then
       echo "[DBG] Modifying number of events to a 100"
       sed -i "s/(10)/(${EVENTS})/g" $files
       if [[ "X$LOCAL_DATA" == "Xtrue" ]]; then
@@ -143,10 +143,14 @@ for x in 1 2 3 4 5; do
   echo "------------------------------"
 done
 
+echo "--- RESULTS ---"
+for files in $(ls *.logfile); do
+  cat ${files} | grep "Elapsed "
+  cat ${files} | grep "Event Throughput"
+done
+
 echo "--- EVENT THROUGHPUT SUMMARY ---"
 for files in $(ls *.logfile); do
-  #cat ${files} | grep "Elapsed "
-  #cat ${files} | grep "Event Throughput"
   file_name=$(echo $files | cut -d "." -f1-2 | cut -d "-" -f1-3)
   result=$(cat ${files} | grep "Event Throughput" | awk '{print $3}' | paste -sd,)
   echo "${file_name} = [$result]"
