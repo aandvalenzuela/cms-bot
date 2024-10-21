@@ -134,8 +134,8 @@ for x in 1 2 3 4 5; do
       if [[ "X$LOCAL_DATA" == "Xtrue" ]]; then
 	sed -i "s/\/store/file:store/g" $files
       fi
-	cat $files | grep "file:store"
- 	cat $files | grep "(100)"
+      cat $files | grep "file:store" || true
+      cat $files | grep "(100)" || true
     fi
     file_name=$(echo $files | cut -d "." -f1)
     echo "--> ${file_name}"
@@ -148,8 +148,8 @@ done
 
 echo "--- RESULTS ---"
 for files in $(ls *.logfile); do
-  cat ${files} | grep "Elapsed "
-  cat ${files} | grep "Event Throughput"
+  cat ${files} | grep "Elapsed " || true
+  cat ${files} | grep "Event Throughput" || true
 done
 
 echo "--- EVENT THROUGHPUT SUMMARY ---"
