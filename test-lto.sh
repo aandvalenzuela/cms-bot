@@ -81,6 +81,7 @@ else
 fi
 
 create_local_installation
+export SITECONFIG_PATH=/cvmfs/cms.cern.ch/SITECONF/T2_CH_CERN
 echo "*** CREATING DEVELOPMENT AREA ***"
 create_development_area_for_release
 echo "*** BUILDING CMSSW FOR ${TYPE}***"
@@ -88,8 +89,6 @@ echo "*** BUILDING CMSSW FOR ${TYPE}***"
 #scram build -j 16
 echo "*** RUNNING WF TO DUMP CONFIG FILES ***"
 mkdir relvals && mkdir data && cd data
-echo $SITECONFIG_PATH
-export SITECONFIG_PATH=/cvmfs/cms.cern.ch/SITECONF/local
 runTheMatrix.py -l $WF -t ${THREADS} --ibeos --job-reports  --command "  --customise Validation/Performance/TimeMemorySummary.customiseWithTimeMemorySummary"
 cp -r ${WF}*/*.py ../relvals
 cd ${WF}*
@@ -133,8 +132,10 @@ for x in 1 2 3 4 5; do
       echo "[DBG] Modifying number of events to a 100"
       sed -i "s/(10)/(${EVENTS})/g" $files
       if [[ "X$LOCAL_DATA" == "Xtrue" ]]; then
-        sed -i "s/\/store/file:store/g" $files
+	sed -i "s/\/store/file:store/g" $files
       fi
+	cat $files | grep "file:store"
+ 	cat $files | grep "(100)"
     fi
     file_name=$(echo $files | cut -d "." -f1)
     echo "--> ${file_name}"
