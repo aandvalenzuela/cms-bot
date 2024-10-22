@@ -75,9 +75,9 @@ if [[ "${IB}" == *"NONLTO"* ]]; then
   TYPE="NONLTO"
 fi
 if [[ "${IB}" == *"O2"* ]]; then
-  TYPE="${TYPE}-O2"
+  TYPE="O2${TYPE}"
 else
-  TYPE="${TYPE}-O3"
+  TYPE="O3${TYPE}"
 fi
 
 create_local_installation
