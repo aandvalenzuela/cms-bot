@@ -139,9 +139,10 @@ for x in 1 2 3 4 5; do
     fi
     file_name=$(echo $files | cut -d "." -f1)
     echo "--> ${file_name}"
-    /usr/bin/time --verbose cmsRun --numThreads ${THREADS} $files >> "step${step}-${WF}-${TYPE}-${file_name}.logfile" 2>&1
-    cat "step${step}-${WF}-${TYPE}-${file_name}.logfile" | grep "Elapsed "
-    cat "step${step}-${WF}-${TYPE}-${file_name}.logfile" | grep "Event Throughput"
+    SHORT_WF=$(echo $WF | cut -d "." -f1)
+    /usr/bin/time --verbose cmsRun --numThreads ${THREADS} $files >> "step${step}_${SHORT_WF}_${TYPE}_${file_name}.logfile" 2>&1
+    cat "step${step}_${SHORT_WF}_${TYPE}_${file_name}.logfile" | grep "Elapsed "
+    cat "step${step}_${SHORT_WF}_${TYPE}_${file_name}.logfile" | grep "Event Throughput"
   done
   echo "------------------------------"
 done
@@ -152,9 +153,16 @@ for files in $(ls *.logfile); do
   cat ${files} | grep "Event Throughput" || true
 done
 
+echo "--- TIME SUMMARY ---"
+for files in $(ls *.logfile); do
+  file_name=$(echo $files | cut -d "." -f1-2 | cut -d "_" -f1-3)
+  result=$(cat ${files} | grep "Elapsed " | awk '{print $8}' | paste -sd,)
+  echo "${file_name}_time = [$result]"
+done
+
 echo "--- EVENT THROUGHPUT SUMMARY ---"
 for files in $(ls *.logfile); do
-  file_name=$(echo $files | cut -d "." -f1-2 | cut -d "-" -f1-3)
+  file_name=$(echo $files | cut -d "." -f1-2 | cut -d "_" -f1-3)
   result=$(cat ${files} | grep "Event Throughput" | awk '{print $3}' | paste -sd,)
-  echo "${file_name} = [$result]"
+  echo "${file_name}_tp = [$result]"
 done
