@@ -122,7 +122,7 @@ fi
 cd ../../relvals
 
 echo "*** RUNNING WF STEPS ***"
-for x in 1 2 3 4 5; do
+for x in 1 2 3; do
   echo "--------- NEW RUN ------------"
   step=0
   for files in $(ls *.py); do
