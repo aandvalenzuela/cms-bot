@@ -89,7 +89,7 @@ echo "*** BUILDING CMSSW FOR ${TYPE}***"
 #scram build -j 16
 echo "*** RUNNING WF TO DUMP CONFIG FILES ***"
 mkdir relvals && mkdir data && cd data
-runTheMatrix.py -l $WF -t ${THREADS} --ibeos --job-reports  --command "  --customise Validation/Performance/TimeMemorySummary.customiseWithTimeMemorySummary"
+runTheMatrix.py -l $WF -t ${THREADS} --maxSteps 3 --ibeos --job-reports  --command "  --customise Validation/Performance/TimeMemorySummary.customiseWithTimeMemorySummary"
 cp -r ${WF}*/*.py ../relvals
 cd ${WF}*
 
