@@ -94,18 +94,19 @@ mkdir relvals && mkdir data && cd data
 
 # step 2 (HLT) and step 3 (reconstruction)
 if [[ "${STEP}" == *"step3"* ]]; then
-  runTheMatrix.py -l $WF -t ${THREADS} --maxSteps 3 --ibeos -i all --job-reports --command "  --customise Validation/Performance/TimeMemorySummary.customiseWithTimeMemorySummary"
+  runTheMatrix.py -l $WF -t ${THREADS} --maxSteps 3 ---nEvents ${EVENTS} -ibeos -i all --job-reports --command "  --customise Validation/Performance/TimeMemorySummary.customiseWithTimeMemorySummary"
+  cp ${WF}*/step3*.py ../relvals
+  cp ${WF}*/step2*.root ../relvals
 fi
 #runTheMatrix.py -l $WF -t ${THREADS} --maxSteps 3 --ibeos --job-reports  --command "  --customise Validation/Performance/TimeMemorySummary.customiseWithTimeMemorySummary"
+#cp -r ${WF}*/*.py ../relvals
 
-exit 0
-cp -r ${WF}*/*.py ../relvals
 cd ${WF}*
 
 if [[ "X$LOCAL_DATA" == "Xtrue" ]]; then
   echo "COPYING DATA"
   # Parse logs to get the data
-  for logfiles in $(ls *.log); do
+  for logfiles in $(ls ${STEP}*.log); do
     for file in $(grep "Successfully opened file" $logfiles | grep -o 'root://[^ ]*'); do
       echo "--> ${file}"
       local_path=$(echo ${file} | sed 's/.*\(store\/.*\)/\1/')
@@ -114,7 +115,7 @@ if [[ "X$LOCAL_DATA" == "Xtrue" ]]; then
     done
   done
   # Parse config files to get the data
-  for configfiles in $(ls *.py); do
+  for configfiles in $(ls ${STEP}*.py); do
     datafiles=$(grep "process.mix.input.fileNames" $configfiles | cut -d "[" -f2 | cut -d "]" -f1 | tr -d "'")
     xrootdprefix="root://eoscms.cern.ch//eos/cms/store/user/cmsbuild/"
     for file in ${datafiles//,/ }; do
@@ -131,27 +132,26 @@ fi
 cd ../../relvals
 
 echo "*** RUNNING WF STEPS ***"
-for x in 1 2 3; do
+for x in 1 2; do
   echo "--------- NEW RUN ------------"
-  step=0
-  for files in $(ls *.py); do
-    #step=step+1
-    step=$((step+1))
+  #step=0
+  for files in $(ls ${STEP}*.py); do
+    #step=$((step+1))
     if [ ${x} -eq 1 ]; then
-      echo "[DBG] Modifying number of events to a 100"
-      sed -i "s/(10)/(${EVENTS})/g" $files
+      #echo "[DBG] Modifying number of events to a 100"
+      #sed -i "s/(10)/(${EVENTS})/g" $files
       if [[ "X$LOCAL_DATA" == "Xtrue" ]]; then
 	sed -i "s/\/store/file:store/g" $files
       fi
       cat $files | grep "file:store" || true
-      cat $files | grep "(100)" || true
+      #cat $files | grep "(100)" || true
     fi
     file_name=$(echo $files | cut -d "." -f1)
     echo "--> ${file_name}"
     SHORT_WF=$(echo $WF | cut -d "." -f1)
-    /usr/bin/time --verbose cmsRun --numThreads ${THREADS} $files >> "step${step}_${SHORT_WF}_${TYPE}_${file_name}.logfile" 2>&1
-    cat "step${step}_${SHORT_WF}_${TYPE}_${file_name}.logfile" | grep "Elapsed "
-    cat "step${step}_${SHORT_WF}_${TYPE}_${file_name}.logfile" | grep "Event Throughput"
+    /usr/bin/time --verbose cmsRun --numThreads ${THREADS} $files >> "${STEP}_${SHORT_WF}_${TYPE}_${file_name}_run${x}.logfile" 2>&1
+    cat "${STEP}_${SHORT_WF}_${TYPE}_${file_name}_run${x}.logfile" | grep "Elapsed "
+    cat "${STEP}_${SHORT_WF}_${TYPE}_${file_name}_run${x}.logfile" | grep "Event Throughput"
   done
   echo "------------------------------"
 done
