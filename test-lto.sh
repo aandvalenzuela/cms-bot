@@ -1,12 +1,13 @@
 #!/bin/bash -ex
 
 IB=$1
-WF=$2
-O2=$3
-LOCAL_DATA=$4
-RUNS=$5
-EVENTS=$6
-THREADS=$7
+STEP=$2
+WF=$3
+O2=$4
+LOCAL_DATA=$5
+RUNS=$6
+EVENTS=$7
+THREADS=$8
 
 function cmsenv()
 {
@@ -89,7 +90,15 @@ echo "*** BUILDING CMSSW FOR ${TYPE}***"
 #scram build -j 16
 echo "*** RUNNING WF TO DUMP CONFIG FILES ***"
 mkdir relvals && mkdir data && cd data
-runTheMatrix.py -l $WF -t ${THREADS} --maxSteps 3 --ibeos --job-reports  --command "  --customise Validation/Performance/TimeMemorySummary.customiseWithTimeMemorySummary"
+# step 1 (simulation)
+
+# step 2 (HLT) and step 3 (reconstruction)
+if [[ "${STEP}" == *"step3"* ]]; then
+  runTheMatrix.py -l $WF -t ${THREADS} --maxSteps 3 --ibeos -i all --job-reports --command "  --customise Validation/Performance/TimeMemorySummary.customiseWithTimeMemorySummary"
+fi
+#runTheMatrix.py -l $WF -t ${THREADS} --maxSteps 3 --ibeos --job-reports  --command "  --customise Validation/Performance/TimeMemorySummary.customiseWithTimeMemorySummary"
+
+exit 0
 cp -r ${WF}*/*.py ../relvals
 cd ${WF}*
 
