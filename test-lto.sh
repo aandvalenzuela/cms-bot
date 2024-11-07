@@ -92,6 +92,8 @@ echo "*** RUNNING WF TO DUMP CONFIG FILES ***"
 mkdir relvals && mkdir data && cd data
 # step 1 (simulation)
 
+voms-proxy-init -voms cms -rfc
+
 # step 2 (HLT) and step 3 (reconstruction)
 if [[ "${STEP}" == *"step3"* ]]; then
   runTheMatrix.py -l $WF -t ${THREADS} --maxSteps 3 --nEvents ${EVENTS} -ibeos -i all --job-reports --command "  --customise Validation/Performance/TimeMemorySummary.customiseWithTimeMemorySummary"
