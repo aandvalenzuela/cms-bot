@@ -151,9 +151,9 @@ for x in 1 2; do
     file_name=$(echo $files | cut -d "." -f1)
     echo "--> ${file_name}"
     SHORT_WF=$(echo $WF | cut -d "." -f1)
-    /usr/bin/time --verbose cmsRun --numThreads ${THREADS} $files >> "${STEP}_${SHORT_WF}_${TYPE}_${file_name}_run${x}.logfile" 2>&1
-    cat "${STEP}_${SHORT_WF}_${TYPE}_${file_name}_run${x}.logfile" | grep "Elapsed "
-    cat "${STEP}_${SHORT_WF}_${TYPE}_${file_name}_run${x}.logfile" | grep "Event Throughput"
+    /usr/bin/time --verbose cmsRun --numThreads ${THREADS} $files >> "${STEP}_${SHORT_WF}_${TYPE}_${file_name}.logfile" 2>&1
+    cat "${STEP}_${SHORT_WF}_${TYPE}_${file_name}.logfile" | grep "Elapsed "
+    cat "${STEP}_${SHORT_WF}_${TYPE}_${file_name}.logfile" | grep "Event Throughput"
   done
   echo "------------------------------"
 done
