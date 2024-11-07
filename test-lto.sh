@@ -96,7 +96,7 @@ voms-proxy-init -voms cms -rfc
 
 # step 2 (HLT) and step 3 (reconstruction)
 if [[ "${STEP}" == *"step3"* ]]; then
-  runTheMatrix.py -l $WF -t ${THREADS} --maxSteps 3 --nEvents ${EVENTS} -ibeos -i all --job-reports --command "  --customise Validation/Performance/TimeMemorySummary.customiseWithTimeMemorySummary"
+  runTheMatrix.py -l $WF -t ${THREADS} --maxSteps 3 --nEvents ${EVENTS} --ibeos -i all --job-reports --command "  --customise Validation/Performance/TimeMemorySummary.customiseWithTimeMemorySummary"
   cp ${WF}*/step3*.py ../relvals
   cp ${WF}*/step2*.root ../relvals
 fi
